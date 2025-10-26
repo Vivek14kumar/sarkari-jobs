@@ -20,7 +20,7 @@ export default function AdminLogin() {
   const handleLogin = (e) => {
     e.preventDefault();
     // Hardcoded admin credentials
-    if (email === "admin@sarkari.com" && password === "admin123") {
+    if (email === "resulthub1428@gmail.com" && password === "Vivek2117@") {
       // Save login status in localStorage
       localStorage.setItem("adminToken", "loggedIn");
       router.push("/admin/dashboard");
