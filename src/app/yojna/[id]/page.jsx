@@ -32,27 +32,33 @@ export default async function YojnaDetailPage({ params }) {
         <FaArrowLeft /> Back to All Yojnas
       </Link>
 
-      {/* Hero Section */}
-      <div className="relative rounded-3xl overflow-hidden shadow-2xl">
-        {yojna.thumbnail && (
-          <div className="h-64 md:h-80 w-full relative">
-            <img
-              src={yojna.thumbnail}
-              alt={yojna.title_en}
-              className="w-full h-full object-cover brightness-90 transition-transform duration-700 hover:scale-105"
-            />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-green-700/30 animate-gradient-x"></div>
-          </div>
-        )}
-        <div className="absolute bottom-6 left-6">
-          <h1 className="text-3xl md:text-5xl font-extrabold drop-shadow-2xl text-white animate-fadeIn">
-            {yojna.title_en}
-          </h1>
-          <h2 className="mt-2 text-xl md:text-2xl font-semibold text-green-100 drop-shadow-md animate-fadeIn delay-200">
-            {yojna.title_hi}
-          </h2>
-        </div>
-      </div>
+{/* Hero Section */}
+<div className="relative ">
+  
+  {/* Title */}
+  <div className="text-center m-1">
+    <h1 className="text-2xl md:text-4xl font-extrabold drop-shadow-2xl animate-fadeIn p-2">
+      {yojna.title_en} / {yojna.title_hi}
+    </h1>
+  </div>
+
+  {/* Thumbnail Image */}
+  {yojna.thumbnail && (
+    <div className="relative aspect-video w-full overflow-hidden rounded-3xl">
+      <img
+        src={yojna.thumbnail}
+        alt={yojna.title_en}
+        className="w-full h-full object-cover object-center brightness-95 transition-transform duration-700 hover:scale-105"
+        style={{ maxHeight: "720px" }}
+      />
+      
+      {/* Overlay Gradient */}
+      <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent"></div>
+    </div>
+  )}
+
+</div>
+
 
       {/* Description Card */}
       <div className="bg-gradient-to-r from-green-50 to-green-100 border-l-8 border-green-400 rounded-3xl shadow-lg p-8 hover:shadow-2xl transition-all duration-300">

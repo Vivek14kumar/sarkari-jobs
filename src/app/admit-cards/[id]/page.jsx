@@ -57,7 +57,7 @@ const AdmitCardDetails = () => {
                       target="_blank"
                       className="text-blue-600 underline"
                     >
-                      {info.value}
+                      Click Here
                     </a>
                   ) : (
                     info.value

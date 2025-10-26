@@ -124,7 +124,7 @@ export default function JobDetails() {
       )}
 {/* Eligibility Section */}
 {job.eligibility && (
-  <section className="mb-6 bg-white p-5 rounded-lg border border-gray-200 shadow-sm">
+  <section className="mb-6 bg-gray-50 p-5 rounded-lg border-gray-500 border-l-4 shadow-sm  ">
     <h3 className="text-xl font-semibold text-blue-700 mb-3 flex items-center gap-2">
       <FaUserGraduate className="text-blue-600" />
       {language === "en" ? "Eligibility" : "योग्यता"}

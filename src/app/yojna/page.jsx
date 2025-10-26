@@ -98,15 +98,15 @@ export default function YojnaListPage() {
             >
               {/* Thumbnail */}
               {y.thumbnail ? (
-                <div className="h-48 w-full overflow-hidden relative">
+                <div className="h-45 w-full overflow-hidden relative">
                   <img
                     src={y.thumbnail}
                     alt={y.title_en}
                     className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110 group-hover:brightness-110"
+                    width={1280}
+                    height={720}
                   />
-                  <span className="absolute top-3 right-3 bg-green-700 text-white px-3 py-1 rounded-full text-xs font-semibold">
-                    {y.category}
-                  </span>
+                  
                 </div>
               ) : (
                 <div className="h-48 w-full bg-gradient-to-br from-green-300 to-green-500 flex items-center justify-center text-white text-xl font-bold">

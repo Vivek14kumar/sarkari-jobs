@@ -4,7 +4,7 @@ import JobCard from "@/components/JobCard";
 import SEOHead from "@/components/SEOHead";
 
 const categories = ["All", "Central Govt", "State Govt", "SSC", "Railway"];
-const jobsPerLoad = 3;
+const jobsPerLoad = 6; // You can adjust this
 
 export default function JobsPage() {
   const [jobs, setJobs] = useState([]);
@@ -20,7 +20,6 @@ export default function JobsPage() {
         const res = await fetch("/api/jobs");
         if (!res.ok) throw new Error("Failed to fetch jobs");
         const data = await res.json();
-        // Remove duplicates if any
         const uniqueJobs = Array.from(new Map(data.map(j => [j._id, j])).values());
         setJobs(uniqueJobs);
       } catch (err) {
@@ -44,8 +43,18 @@ export default function JobsPage() {
 
   const loadMoreJobs = () => setVisibleJobs(prev => prev + jobsPerLoad);
 
-  if (loading) return <p className="text-center py-10 text-gray-500">Loading jobs...</p>;
-  if (jobs.length === 0) return <p className="text-center py-10 text-gray-500">No jobs available.</p>;
+  // Skeleton loader component matching JobCard height
+  const SkeletonJobCard = () => (
+    <div className="bg-white rounded-xl shadow-md border border-gray-100 p-4 flex flex-col justify-between min-h-[200px] animate-pulse">
+      <div className="h-6 bg-gray-300 rounded mb-3 w-3/4"></div>
+      <div className="h-4 bg-gray-200 rounded mb-2 w-full"></div>
+      <div className="h-4 bg-gray-200 rounded mb-2 w-full"></div>
+      <div className="flex justify-between mt-auto">
+        <div className="h-6 w-1/2 bg-gray-300 rounded"></div>
+        <div className="h-6 w-1/4 bg-gray-300 rounded"></div>
+      </div>
+    </div>
+  );
 
   return (
     <>
@@ -76,21 +85,24 @@ export default function JobsPage() {
           ))}
         </div>
 
-        {/* Jobs Grid with animation */}
-        <div key={fadeKey} className="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 animate-fadeGrid">
-          {currentJobs.map((job, index) => (
-            <div
-              key={job._id}
-              className="opacity-0 translate-y-4 animate-fadeIn"
-              style={{ animationDelay: `${index * 100}ms` }}
-            >
-              <JobCard job={job} />
-            </div>
-          ))}
+        {/* Jobs Grid */}
+        <div key={fadeKey} className="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+          {loading 
+            ? Array.from({ length: jobsPerLoad }).map((_, i) => <SkeletonJobCard key={i} />)
+            : currentJobs.map((job, index) => (
+                <div
+                  key={job._id}
+                  className="opacity-0 translate-y-4 animate-fadeIn"
+                  style={{ animationDelay: `${index * 100}ms` }}
+                >
+                  <JobCard job={job} />
+                </div>
+              ))
+          }
         </div>
 
         {/* Load More Button */}
-        {visibleJobs < filteredJobs.length && (
+        {!loading && visibleJobs < filteredJobs.length && (
           <div className="flex justify-center mt-8">
             <button
               onClick={loadMoreJobs}
@@ -107,12 +119,7 @@ export default function JobsPage() {
         @keyframes fadeIn {
           to { opacity: 1; transform: translateY(0); }
         }
-        @keyframes fadeGrid {
-          from { opacity: 0; }
-          to { opacity: 1; }
-        }
         .animate-fadeIn { animation: fadeIn 0.5s forwards; }
-        .animate-fadeGrid { animation: fadeGrid 0.3s ease-out; }
       `}</style>
     </>
   );
