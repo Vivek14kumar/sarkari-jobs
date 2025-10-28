@@ -1,12 +1,13 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { DragDropContext, Droppable, Draggable } from "@hello-pangea/dnd";
 import useAdminAuth from "../hooks/useAdminAuth";
 
 export default function AddYojnaPage() {
   useAdminAuth();
-  const [yojnaData, setYojnaData] = useState({
+
+  const emptyYojna = {
     title_en: "",
     title_hi: "",
     description_en: "",
@@ -16,9 +17,34 @@ export default function AddYojnaPage() {
     documents: [""],
     faq: [{ question: "", answer: "" }],
     otherDetails: [""],
-    thumbnail: null, // added thumbnail
-  });
+    thumbnail: null,
+  };
 
+  const [yojnaData, setYojnaData] = useState(emptyYojna);
+  const [yojnas, setYojnas] = useState([]);
+  const [editingId, setEditingId] = useState(null);
+  const [loading, setLoading] = useState(false);
+
+  // ==============================
+  // 🔹 Fetch all Yojnas
+  // ==============================
+  const fetchYojnas = async () => {
+    try {
+      const res = await fetch("/api/yojna");
+      const data = await res.json();
+      if (res.ok) setYojnas(data);
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  useEffect(() => {
+    fetchYojnas();
+  }, []);
+
+  // ==============================
+  // 🔹 Handlers for Input / Array
+  // ==============================
   const handleChange = (e) => {
     const { name, value } = e.target;
     setYojnaData((prev) => ({ ...prev, [name]: value }));
@@ -60,66 +86,90 @@ export default function AddYojnaPage() {
     if (file) setYojnaData((prev) => ({ ...prev, thumbnail: file }));
   };
 
+  // ==============================
+  // 🔹 Submit (Add / Update)
+  // ==============================
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setLoading(true);
     try {
       let dataToSend = { ...yojnaData };
 
-      // Convert thumbnail to Base64 if present
-      if (yojnaData.thumbnail) {
+      // Convert thumbnail to base64 if file selected
+      if (yojnaData.thumbnail instanceof File) {
         const reader = new FileReader();
         reader.readAsDataURL(yojnaData.thumbnail);
         reader.onloadend = async () => {
           dataToSend.thumbnail = reader.result;
-
-          const res = await fetch("/api/yojna", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(dataToSend),
-          });
-
-          if (res.ok) {
-            alert("Yojna added successfully!");
-            resetForm();
-          } else {
-            const error = await res.json();
-            alert(error.error);
-          }
+          await saveYojna(dataToSend);
         };
       } else {
-        const res = await fetch("/api/yojna", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(dataToSend),
-        });
-        if (res.ok) {
-          alert("Yojna added successfully!");
-          resetForm();
-        } else {
-          const error = await res.json();
-          alert(error.error);
-        }
+        await saveYojna(dataToSend);
       }
     } catch (err) {
       alert(err.message);
+    } finally {
+      setLoading(false);
     }
   };
 
-  const resetForm = () => {
-    setYojnaData({
-      title_en: "",
-      title_hi: "",
-      description_en: "",
-      description_hi: "",
-      eligibility: [""],
-      links: [{ type: "Apply Link", url: "" }, { type: "Official Link", url: "" }],
-      documents: [""],
-      faq: [{ question: "", answer: "" }],
-      otherDetails: [""],
-      thumbnail: null,
+  const saveYojna = async (dataToSend) => {
+    const method = editingId ? "PUT" : "POST";
+    const url = editingId ? `/api/yojna/${editingId}` : "/api/yojna";
+
+    const res = await fetch(url, {
+      method,
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(dataToSend),
     });
+
+    const responseData = await res.json();
+
+    if (res.ok) {
+      alert(editingId ? "Yojna updated!" : "Yojna added successfully!");
+      resetForm();
+      fetchYojnas();
+    } else {
+      alert(responseData.error || "Something went wrong");
+    }
   };
 
+  // ==============================
+  // 🔹 Delete Yojna
+  // ==============================
+  const handleDelete = async (id) => {
+    if (!confirm("Are you sure you want to delete this Yojna?")) return;
+    try {
+      const res = await fetch(`/api/yojna/${id}`, { method: "DELETE" });
+      if (res.ok) {
+        alert("Yojna deleted!");
+        fetchYojnas();
+      }
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  // ==============================
+  // 🔹 Edit Yojna
+  // ==============================
+  const handleEdit = (yojna) => {
+    setYojnaData(yojna);
+    setEditingId(yojna._id);
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
+  // ==============================
+  // 🔹 Reset Form
+  // ==============================
+  const resetForm = () => {
+    setYojnaData(emptyYojna);
+    setEditingId(null);
+  };
+
+  // ==============================
+  // 🔹 Render Section Function
+  // ==============================
   const renderSection = (title, arrayName, isObject = false, fields = []) => (
     <div className="mb-4">
       <h3 className="font-semibold mb-2">{title}</h3>
@@ -203,11 +253,17 @@ export default function AddYojnaPage() {
     </div>
   );
 
+  // ==============================
+  // 🔹 Render UI
+  // ==============================
   return (
-    <main className="max-w-4xl mx-auto p-6">
-      <h1 className="text-3xl font-bold text-green-600 mb-6 text-center">Add Sarkari Yojna</h1>
-      <form onSubmit={handleSubmit} className="space-y-4">
-        {/* Titles */}
+    <main className="max-w-5xl mx-auto p-6">
+      <h1 className="text-3xl font-bold text-green-600 mb-6 text-center">
+        {editingId ? "Edit Sarkari Yojna" : "Add Sarkari Yojna"}
+      </h1>
+
+      {/* Form */}
+      <form onSubmit={handleSubmit} className="space-y-4 border p-4 rounded-lg shadow-md bg-white">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <input
             type="text"
@@ -229,7 +285,6 @@ export default function AddYojnaPage() {
           />
         </div>
 
-        {/* Descriptions */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <textarea
             name="description_en"
@@ -260,7 +315,11 @@ export default function AddYojnaPage() {
           />
           {yojnaData.thumbnail && (
             <img
-              src={URL.createObjectURL(yojnaData.thumbnail)}
+              src={
+                yojnaData.thumbnail instanceof File
+                  ? URL.createObjectURL(yojnaData.thumbnail)
+                  : yojnaData.thumbnail
+              }
               alt="Thumbnail Preview"
               className="mt-2 w-48 h-32 object-cover rounded-md border"
             />
@@ -283,15 +342,65 @@ export default function AddYojnaPage() {
         <div className="flex justify-between items-center">
           <button
             type="submit"
+            disabled={loading}
             className="px-6 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition"
           >
-            Add Yojna
+            {loading ? "Saving..." : editingId ? "Update Yojna" : "Add Yojna"}
           </button>
           <Link href="/admin/dashboard" className="text-green-600 hover:underline">
             Back to Dashboard
           </Link>
         </div>
       </form>
+
+      {/* Yojna List */}
+      <div className="mt-10">
+        <h2 className="text-2xl font-semibold mb-4">All Yojnas</h2>
+        <div className="overflow-x-auto">
+          <table className="w-full border-collapse border text-sm">
+            <thead>
+              <tr className="bg-green-100 text-left">
+                <th className="border p-2">Title (EN)</th>
+                <th className="border p-2">Title (HI)</th>
+                <th className="border p-2">Created</th>
+                <th className="border p-2 text-center">Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {yojnas.map((y) => (
+                <tr key={y._id}>
+                  <td className="border p-2">{y.title_en}</td>
+                  <td className="border p-2">{y.title_hi}</td>
+                  <td className="border p-2">
+                    {new Date(y.createdAt).toLocaleDateString()}
+                  </td>
+                  <td className="border p-2 flex justify-center gap-2">
+                    <button
+                      onClick={() => handleEdit(y)}
+                      className="px-3 py-1 bg-blue-500 text-white rounded hover:bg-blue-600"
+                    >
+                      Edit
+                    </button>
+                    <button
+                      onClick={() => handleDelete(y._id)}
+                      className="px-3 py-1 bg-red-500 text-white rounded hover:bg-red-600"
+                    >
+                      Delete
+                    </button>
+                  </td>
+                </tr>
+              ))}
+              {yojnas.length === 0 && (
+                <tr>
+                  <td colSpan="4" className="text-center p-3 text-gray-500">
+                    No Yojna found.
+                  </td>
+                </tr>
+              )}
+            </tbody>
+          </table>
+        </div>
+      </div>
     </main>
   );
 }
