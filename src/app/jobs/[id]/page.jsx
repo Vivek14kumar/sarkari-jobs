@@ -16,6 +16,7 @@ import {
   FaCheckCircle,
 } from "react-icons/fa";
 import Link from "next/link";
+import SEOHead from "@/components/SEOHead";
 
 export default function JobDetails() {
   const { id } = useParams();
@@ -58,6 +59,13 @@ export default function JobDetails() {
   const ageLimits = job.age_limit || [];
 
   return (
+    <>
+    <SEOHead
+        title={`${job.title} - Apply Online | ResultsHub.in`}
+        description={`Apply online for ${job.title}. Check eligibility, important dates, fees, and official notification.`}
+        image={job.image || "/default-og-image.jpg"}
+        url={`https://resultshub.in/jobs/${job.slug}`}
+      />
     <main className="max-w-6xl mx-auto bg-white shadow-lg rounded-2xl p-6 md:p-10 my-8 border border-gray-200">
       {/* Header Bar */}
       <div className="flex justify-between items-center mb-6">
@@ -344,5 +352,6 @@ export default function JobDetails() {
         )}
       </section>
     </main>
+    </>
   );
 }

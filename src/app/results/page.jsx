@@ -4,6 +4,7 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import Link from "next/link";
 import { FaExternalLinkAlt, FaSearch } from "react-icons/fa";
+import SEOHead from "@/components/SEOHead";
 
 const ResultPage = () => {
   const [results, setResults] = useState([]);
@@ -82,6 +83,13 @@ const ResultPage = () => {
   };
 
   return (
+    <>
+    <SEOHead
+        title="Latest Sarkari Results 2025 | Government Exam Results | ResultsHub.in"
+        description="Check all latest Sarkari Results 2025 including SSC, UPSC, Railway, Bank, Police, and other government exam results in English and Hindi at ResultsHub.in."
+        keywords="Sarkari Result 2025, Government Results, Exam Results, SSC Result, UPSC Result, Railway Result, Bank Result, Police Result, Sarkari Exam, Resultshub"
+        image="https://resultshub.in/og-image.png"
+      />
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-indigo-50 py-10 px-4">
       <div className="max-w-6xl mx-auto">
         <h1 className="text-4xl font-extrabold text-center text-blue-700 mb-8 tracking-tight drop-shadow-sm">
@@ -197,6 +205,7 @@ const ResultPage = () => {
         )}
       </div>
     </div>
+    </>
   );
 };
 

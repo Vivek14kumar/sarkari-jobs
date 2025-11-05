@@ -220,8 +220,11 @@ export default function HomePage() {
   return (
     <>
       <SEOHead
-        title="Sarkari Portal 2025 | Jobs, Admit Cards, Results, Yojana"
-        description="Browse latest government jobs, admit cards, results, and Sarkari Yojana. All updates in English & Hindi. UPSC, SSC, Railway, and State Govt."
+        title="ResultsHub.in - Latest Sarkari Results & Government Jobs 2025"
+        description="Check the latest Sarkari Results, Admit Cards, and Government Job Notifications in English & Hindi."
+        keywords="Sarkari Result, Latest Jobs 2025, Admit Card, Govt Jobs, Sarkari Naukri"
+        image="/images/home-og.jpg"
+        url="https://resultshub.in"
       />
 
       <main className="max-w-6xl mx-auto p-4">

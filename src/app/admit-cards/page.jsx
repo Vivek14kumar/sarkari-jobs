@@ -4,6 +4,7 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import Link from "next/link";
 import { FaExternalLinkAlt } from "react-icons/fa";
+import SEOHead from "@/components/SEOHead";
 
 const AdmitCardPage = () => {
   const [admitCards, setAdmitCards] = useState([]);
@@ -51,6 +52,13 @@ const AdmitCardPage = () => {
   );
 
   return (
+    <>
+    <SEOHead
+        title="Sarkari Admit Card 2025 | Download Exam Hall Tickets | ResultsHub.in"
+        description="Download Sarkari Admit Cards 2025 for SSC, UPSC, Railway, Bank, Police, and other government exams. Get official exam date, hall ticket, and instructions at ResultsHub.in."
+        keywords="Sarkari Result, Sarkari Admit Card 2025, Government Exam Admit Card, SSC Admit Card, UPSC Hall Ticket, Railway Admit Card, Police Exam Admit Card, Sarkari Exam, Resultshub"
+        image="https://resultshub.in/og-image.png"
+      />
     <div className="min-h-screen bg-gradient-to-br from-green-50 via-white to-teal-50 py-10 px-4">
       <div className="max-w-6xl mx-auto">
         <h1 className="text-4xl font-extrabold text-center text-green-700 mb-8 tracking-tight drop-shadow-sm">
@@ -140,6 +148,7 @@ const AdmitCardPage = () => {
         )}
       </div>
     </div>
+    </>
   );
 };
 

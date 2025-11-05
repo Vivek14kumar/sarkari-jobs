@@ -1,6 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import SEOHead from "@/components/SEOHead";
 
 export default function YojnaListPage() {
   const [yojnas, setYojnas] = useState([]);
@@ -56,6 +57,13 @@ export default function YojnaListPage() {
     );
 
   return (
+    <>
+     <SEOHead
+        title="Government Schemes 2025 | Sarkari Yojana | Results Hub"
+        description="Get the latest updates on all Government Schemes (Sarkari Yojana) in India. Check eligibility, benefits, and application links for central and state yojanas at ResultsHub.in."
+        keywords="Government Schemes 2025, Sarkari Yojana, PM Kisan, Ayushman Bharat, PM Awas Yojana, Beti Bachao Beti Padhao, PMEGP, Government Schemes in India, Resultshub"
+        image="https://resultshub.in/og-image.png" // optional
+      />
     <main className="max-w-6xl mx-auto p-6">
       <h1 className="text-4xl font-extrabold text-center text-green-700 mb-10">
         🌿 Sarkari Yojnas
@@ -142,5 +150,6 @@ export default function YojnaListPage() {
         </div>
       )}
     </main>
+    </>
   );
 }
