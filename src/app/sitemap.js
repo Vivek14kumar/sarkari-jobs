@@ -1,7 +1,7 @@
 import { connectToDB } from "@/lib/mongodb";
-import Job from "@/app/models/Job";
-import ResultAdmit from "@/app/models/result-admit";
-import Yojna from "@/app/models/Yojna";
+import Job from "@/app/api/models/Job";
+import ResultAdmit from "@/app/api/models/result-admit";
+import Yojna from "@/app/api/models/Yojna";
 
 export const dynamic = "force-dynamic";
 
