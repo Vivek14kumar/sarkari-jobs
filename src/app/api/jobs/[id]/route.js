@@ -1,6 +1,7 @@
 import Job from "@/app/api/models/Job";
 import { NextResponse } from "next/server";
 import { connectToDB } from "@/lib/mongodb.js";
+import mongoose from "mongoose";
 
 // Get a job by ID
 export async function GET(req, context) {
@@ -8,9 +9,15 @@ export async function GET(req, context) {
     await connectToDB();
 
     const { id } = await context.params; // ✅ Must await
-
-    const job = await Job.findById(id);
-
+    let job;
+    //const job = await Job.findById(id);
+    // Check if it's a valid ObjectId → admin side
+    if (mongoose.Types.ObjectId.isValid(id)) {
+      job = await Job.findById(id);
+    } else {
+      // Otherwise → treat as slug (for SEO/frontend)
+      job = await Job.findOne({ slug: id });
+    } 
     if (!job) {
       return NextResponse.json({ error: "Job not found" }, { status: 404 });
     }

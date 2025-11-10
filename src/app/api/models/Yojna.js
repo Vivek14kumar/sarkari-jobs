@@ -22,8 +22,19 @@ const yojnaSchema = new mongoose.Schema(
     faq: [faqSchema],
     otherDetails: [String],
     thumbnail: String, // added thumbnail
+    slug: { type: String, unique: true },
   },
   { timestamps: true }
 );
+
+yojnaSchema.pre("save", function (next) {
+  if (!this.slug && this.title_en) {
+    this.slug = this.title_en
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, "-")
+      .replace(/(^-|-$)/g, "");
+  }
+  next();
+});
 
 export default mongoose.models.Yojna || mongoose.model("Yojna", yojnaSchema);

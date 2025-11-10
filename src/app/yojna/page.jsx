@@ -101,7 +101,7 @@ export default function YojnaListPage() {
           {filteredYojnas.map((y) => (
             <Link
               key={y._id}
-              href={`/yojna/${y._id}`}
+              href={`/yojna/${y.slug || y._id}`}
               className="group relative block rounded-3xl overflow-hidden shadow-xl hover:shadow-2xl transition-all duration-500 bg-gradient-to-br from-green-50 to-green-100"
             >
               {/* Thumbnail */}

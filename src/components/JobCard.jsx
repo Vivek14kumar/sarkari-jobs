@@ -151,7 +151,7 @@ if (job.application_fees?.length > 0) {
         {/* Buttons */}
         <div className="flex justify-between items-center mt-auto">
           <Link
-            href={`/jobs/${job._id}`}
+            href={`/jobs/${job.slug ||job._id}`}
             className="bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-blue-800 transition w-1/2 text-center"
           >
             View Details

@@ -13,8 +13,16 @@ import {
 export default async function YojnaDetailPage({ params }) {
   const { id } = params;
   await connectToDB();
-  const yojna = await Yojna.findById(id).lean();
+  //const yojna = await Yojna.findById(id).lean();
+  let yojna = null;
 
+  // 🟢 Try to find by slug first
+  yojna = await Yojna.findOne({ slug: id }).lean();
+
+  // 🔵 If not found by slug, try by ObjectId
+  if (!yojna && id.match(/^[0-9a-fA-F]{24}$/)) {
+    yojna = await Yojna.findById(id).lean();
+  }
   if (!yojna)
     return (
       <p className="text-center text-red-600 text-lg mt-10 font-semibold">

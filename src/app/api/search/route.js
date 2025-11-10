@@ -18,9 +18,9 @@ export async function GET(request) {
     const yojnas = await Yojna.find({ title_en: { $regex: query, $options: "i" } }).limit(5);
 
     const suggestions = [
-      ...jobs.map(j => ({ name: j.title_en, url: `/jobs/${j._id}`, type: "Job" })),
-      ...results.map(r => ({ name: r.title_en, url: `/results/${r._id}`, type: "Result" })),
-      ...yojnas.map(y => ({ name: y.title_en, url: `/yojna/${y._id}`, type: "Yojna" })),
+      ...jobs.map(j => ({ name: j.title_en, url: `/jobs/${j.slug || j._id}`, type: "Job" })),
+      ...results.map(r => ({ name: r.title_en, url: `/results/${r.slug|| r._id}`, type: "Result" })),
+      ...yojnas.map(y => ({ name: y.title_en, url: `/yojna/${y.slug|| y._id}`, type: "Yojna" })),
     ];
 
     return NextResponse.json(suggestions);

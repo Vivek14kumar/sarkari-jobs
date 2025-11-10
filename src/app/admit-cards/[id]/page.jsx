@@ -10,20 +10,27 @@ const AdmitCardDetails = () => {
   const [card, setCard] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
+useEffect(() => {
     const fetchCard = async () => {
       try {
-        const res = await axios.get("/api/result-admit");
-        const foundCard = res.data.find((item) => item._id === params.id);
-        setCard(foundCard || null);
-        setLoading(false);
+        // ✅ Use either slug or id directly from params
+        const identifier = params.slug || params.id;
+
+        if (!identifier) return;
+
+        // ✅ Hit backend route that supports both slug & id
+        const res = await axios.get(`/api/result-admit/${identifier}`);
+        setCard(res.data);
       } catch (err) {
-        console.error(err);
+        console.error("Error fetching admit card:", err);
+        setCard(null);
+      } finally {
         setLoading(false);
       }
     };
+
     fetchCard();
-  }, [params.id]);
+  }, [params.slug, params.id]);
 
   if (loading) return <div className="text-center py-20">Loading...</div>;
   if (!card) return <div className="text-center py-20">Admit Card Not Found</div>;

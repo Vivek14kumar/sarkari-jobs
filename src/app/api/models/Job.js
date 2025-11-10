@@ -62,8 +62,19 @@ const JobSchema = new mongoose.Schema(
 
     // 🆕 Payment Modes (Multiple options)
     payment_modes: [{ type: String }],
+    slug: { type: String, unique: true },
   },
   { timestamps: true }
 );
+
+JobSchema.pre("save", function (next) {
+  if (!this.slug && this.title_en) {
+    this.slug = this.title_en
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, "-")
+      .replace(/(^-|-$)/g, "");
+  }
+  next();
+});
 
 export default mongoose.models.Job || mongoose.model("Job", JobSchema);

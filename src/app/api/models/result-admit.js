@@ -14,9 +14,20 @@ const resultAdmitSchema = new mongoose.Schema(
         value: String,
       },
     ],
+    slug: { type: String, unique: true },
   },
   { timestamps: true }
 );
+
+resultAdmitSchema.pre("save", function (next) {
+  if (!this.slug && this.title_en) {
+    this.slug = this.title_en
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, "-")
+      .replace(/(^-|-$)/g, "");
+  }
+  next();
+});
 
 // ✅ Prevent model overwrite error during hot reloads in Next.js
 export default mongoose.models.ResultAdmit ||

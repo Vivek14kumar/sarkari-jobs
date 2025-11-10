@@ -3,7 +3,7 @@ import Head from "next/head";
 export default function SEOHead({
   title = "ResultsHub.in - Latest Sarkari Results, Jobs & Admit Cards",
   description = "Get all the latest Sarkari Results, Government Jobs, Admit Cards, and Government Schemes at ResultsHub.in. Stay updated with daily job alerts and notifications.",
-  keywords = "Sarkari Result, Sarkari Naukri, Results Bharat Govt Jobs, Admit Card, Sarkari Exam, Government Schemes, Sarkari Result 2025",
+  keywords = "daa exam form fee, dda mts recruitment,Sarkari Result, Sarkari Naukri, Results Bharat Govt Jobs, Admit Card, Sarkari Exam, Government Schemes, Sarkari Result 2025",
   image = "/default-og-image.jpg", // place in /public folder
   url = "https://resultshub.in",
 }) {

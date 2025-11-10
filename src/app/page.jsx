@@ -85,7 +85,7 @@ export default function HomePage() {
                   return (
                     <Link
   key={item._id}
-  href={`/yojna/${item._id}`}
+  href={`/yojna/${item.slug || item._id}`}
   className="relative group block rounded-2xl overflow-hidden shadow-xl border border-gray-100 hover:shadow-2xl transition-transform duration-500 hover:-translate-y-2"
 >
   {/* Image */}

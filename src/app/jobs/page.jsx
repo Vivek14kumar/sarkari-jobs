@@ -60,7 +60,7 @@ export default function JobsPage() {
     <>
       <SEOHead
         title="All Government Jobs 2025 | Sarkari Result"
-        description="Browse all latest government jobs, admit cards, and results in English & Hindi. Find updates for UPSC, SSC, Railway, and State Government jobs."
+        description="daa exam form fee, dda mts recruitment, Browse all latest government jobs, admit cards, and results in English & Hindi. Find updates for UPSC, SSC, Railway, and State Government jobs. Check DDA MTS Recruitment 2025 details including exam date, eligibility, age limit, and form fee, Apply online through the official DDA portal. candidates must have passed the intermediate (12th) examination from a recognized board or institution and should possess knowledge of stenography, for detailed information regarding eligibility, requirements, and other conditions, applicants are advised to carefully read the official notification."
       />
 
       <main className="max-w-6xl mx-auto p-4">

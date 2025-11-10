@@ -133,7 +133,7 @@ const AdmitCardPage = () => {
                   )}
 
                   <Link
-                    href={`/admit-cards/${card._id}`}
+                    href={`/admit-cards/${card.slug || card._id}`}
                     className="w-full flex items-center justify-center gap-2 bg-gradient-to-r from-blue-500 to-indigo-600 text-white py-2 rounded-xl hover:from-indigo-600 hover:to-blue-500 transition duration-300 font-semibold shadow-md"
                   >
                     View More
