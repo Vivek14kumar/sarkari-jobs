@@ -15,21 +15,33 @@ export default function JobsPage() {
 
   // Fetch jobs from backend
   useEffect(() => {
-    const fetchJobs = async () => {
-      try {
-        const res = await fetch("/api/jobs");
-        if (!res.ok) throw new Error("Failed to fetch jobs");
-        const data = await res.json();
-        const uniqueJobs = Array.from(new Map(data.map(j => [j._id, j])).values());
-        setJobs(uniqueJobs);
-      } catch (err) {
-        console.error(err);
-      } finally {
-        setLoading(false);
+  const fetchJobs = async () => {
+    try {
+      const res = await fetch("/api/jobs");
+      if (!res.ok) {
+        console.error("❌ Failed to fetch jobs:", res.status, res.statusText);
+        return; // Stop execution if response isn’t OK
       }
-    };
-    fetchJobs();
-  }, []);
+
+      const text = await res.text(); // 👈 Safely read response body
+      if (!text) {
+        console.warn("⚠️ Empty response from /api/jobs");
+        return;
+      }
+
+      const data = JSON.parse(text); // 👈 Parse only if non-empty
+      const uniqueJobs = Array.from(new Map(data.map(j => [j._id, j])).values());
+      setJobs(uniqueJobs);
+    } catch (err) {
+      console.error("🚨 Error parsing jobs:", err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  fetchJobs();
+}, []);
+
 
   // Filter jobs based on category
   const filteredJobs = filter === "All" ? jobs : jobs.filter(job => job.category === filter);

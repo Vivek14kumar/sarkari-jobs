@@ -23,9 +23,16 @@ export async function GET() {
   try {
     await connectToDB();
     const jobs = await Job.find().sort({ createdAt: -1 });
+
+    // ✅ Always return valid JSON, even if no jobs found
+    if (!jobs || jobs.length === 0) {
+      return NextResponse.json([], { status: 200 });
+    }
+
     return NextResponse.json(jobs);
   } catch (error) {
     console.error("Error fetching jobs:", error);
-    return NextResponse.json({ error: error.message }, { status: 500 });
+    return NextResponse.json( { success: false, error: error.message || "Error fetching jobs" },
+      { status: 500 });
   }
 }
