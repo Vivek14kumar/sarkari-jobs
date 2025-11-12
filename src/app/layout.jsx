@@ -37,11 +37,12 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
+      <CanonicalHead />
       {/*<Head >
         <link rel="canonical" href="https://resultshub.in"/>
       </Head >*/}
       <body className={`${inter.className} bg-gray-50 text-gray-900 flex flex-col min-h-screen`}>
-        <CanonicalHead />
+        
         {/* Navbar wrapper handles client-side navbar switching */}
         <NavbarWrapper />
 
