@@ -35,8 +35,8 @@ export default function SEOHead({
       {/* Favicon */}
       <link rel="icon" href="/favicon.ico" />
 
-      {/* Canonical URL (for SEO ranking consistency) */}
-      <link rel="canonical" href={url} />
+      {/* Canonical URL (for SEO ranking consistency) 
+      <link rel="canonical" href={url} />*/}
     </Head>
   );
 }

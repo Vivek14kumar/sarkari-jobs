@@ -3,6 +3,8 @@ import { Inter } from "next/font/google";
 import NavbarWrapper from "@/components/NavbarWrapper";
 import Footer from "@/components/Footer";
 import { Analytics } from "@vercel/analytics/next"
+//import Head from "next/head";
+import CanonicalHead from "@/components/CanonicalHead";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -35,8 +37,11 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
-      <head />
+      {/*<Head >
+        <link rel="canonical" href="https://resultshub.in"/>
+      </Head >*/}
       <body className={`${inter.className} bg-gray-50 text-gray-900 flex flex-col min-h-screen`}>
+        <CanonicalHead />
         {/* Navbar wrapper handles client-side navbar switching */}
         <NavbarWrapper />
 
