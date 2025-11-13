@@ -17,6 +17,7 @@ import {
 } from "react-icons/fa";
 import Link from "next/link";
 import SEOHead from "@/components/SEOHead";
+import JobSEO from "@/components/JobSEO";
 
 export default function JobDetails() {
   const { id } = useParams();
@@ -60,6 +61,7 @@ export default function JobDetails() {
 
   return (
     <>
+    <JobSEO jobData={jobData} />
     <SEOHead
         title={`${job.title} - Apply Online | ResultsHub.in`}
         description={`Apply online for ${job.title}. Check eligibility, important dates, fees, and official notification.`}
