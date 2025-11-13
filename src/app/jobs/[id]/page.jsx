@@ -61,7 +61,7 @@ export default function JobDetails() {
 
   return (
     <>
-    <JobSEO jobData={jobData} />
+    <JobSEO jobData={job} />
     <SEOHead
         title={`${job.title} - Apply Online | ResultsHub.in`}
         description={`Apply online for ${job.title}. Check eligibility, important dates, fees, and official notification.`}
