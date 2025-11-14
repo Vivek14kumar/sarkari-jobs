@@ -10,6 +10,6 @@ export default function robots() {
       },
     ],
     sitemap: "https://resultshub.in/sitemap.xml",
-    host: "https://resultshub.in",
+    //host: "https://resultshub.in",
   };
 }
