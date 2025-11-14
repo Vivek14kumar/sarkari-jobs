@@ -1,4 +1,6 @@
 // src/components/JobSEO.jsx
+import Head from "next/head";
+
 export default function JobSEO({ jobData }) {
   if (!jobData) return null;
 
@@ -50,9 +52,11 @@ export default function JobSEO({ jobData }) {
   };
 
   return (
-    <script
-      type="application/ld+json"
-      dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
-    />
+    <Head>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
+      />
+    </Head>
   );
 }

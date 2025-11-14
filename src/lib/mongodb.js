@@ -21,7 +21,7 @@ export const connectToDB = async () => {
     console.error("❌ MongoDB connection error:", error);
     throw error; // throw so API route gets the 500 error properly
   }
-};
+};*/
 
 /*import mongoose from "mongoose"; 
 let isConnected = false;
