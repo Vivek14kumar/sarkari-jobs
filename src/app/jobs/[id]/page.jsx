@@ -5,16 +5,17 @@ import SEOHead from "@/components/SEOHead";
 import { notFound } from "next/navigation";
 
 export default async function JobDetailsPage({ params }) {
-  const resolvedParams = await params
-  const { id } = resolvedParams;
+  //const resolvedParams = await params
+  const { id } = params;
 
   // Fetch job on server so JSON-LD is SSR'd
-  const base = process.env.NEXT_PUBLIC_SITE_URL || "";
+  const base = process.env.NEXT_PUBLIC_SITE_URL || "https://resultshub.in";
   const res = await fetch(`${base}/api/jobs/${id}`, { cache: "no-store" });
 
   if (!res.ok) {
     // handle not found or error
-    return notFound();
+    console.error("Job not found:", id);
+    return<div>Job not found</div>;
   }
 
   const job = await res.json();
