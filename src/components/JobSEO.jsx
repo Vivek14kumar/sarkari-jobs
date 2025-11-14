@@ -46,7 +46,7 @@ export default function JobSEO({ jobData }) {
     directApply: true,
     totalJobOpenings: jobData.totalPosts || undefined,
     url: `https://resultshub.in/jobs/${jobData.slug}`,
-    applicationUrl: jobData.applyLink || undefined,
+    //applicationUrl: jobData.applyLink || undefined,
   };
 
   return (
