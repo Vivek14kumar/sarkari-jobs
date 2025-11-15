@@ -1,6 +1,6 @@
 // app/api/getStats/route.js
 import { connectToDB } from '@/lib/mongodb';
-import Token from '@/models/Token';
+import Token from '@/app/api/models/Token';
 
 
 export async function GET() {
