@@ -5,6 +5,7 @@ import Footer from "@/components/Footer";
 import { Analytics } from "@vercel/analytics/next"
 //import Head from "next/head";
 import CanonicalHead from "@/components/CanonicalHead";
+import ServiceWorkerRegister from "@/components/ServiceWorkerRegister";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -42,7 +43,7 @@ export default function RootLayout({ children }) {
         <link rel="canonical" href="https://resultshub.in"/>
       </Head >*/}
       <body className={`${inter.className} bg-gray-50 text-gray-900 flex flex-col min-h-screen`}>
-        
+        <ServiceWorkerRegister />
         {/* Navbar wrapper handles client-side navbar switching */}
         <NavbarWrapper />
 
