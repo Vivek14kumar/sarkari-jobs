@@ -1,5 +1,5 @@
 
-/*import mongoose from "mongoose";
+import mongoose from "mongoose";
 
 let isConnected = false;
 
@@ -21,9 +21,9 @@ export const connectToDB = async () => {
     console.error("❌ MongoDB connection error:", error);
     throw error; // throw so API route gets the 500 error properly
   }
-};*/
+};
 
-import mongoose from "mongoose"; 
+/*import mongoose from "mongoose"; 
 let isConnected = false;
  export const connectToDB = async () => { if (isConnected) return;
    try { await mongoose.connect(process.env.MONGO_URI,
@@ -34,4 +34,4 @@ let isConnected = false;
      } catch (error) 
      { 
       console.error("❌ MongoDB connection error:", error);
-} };
+} };*/

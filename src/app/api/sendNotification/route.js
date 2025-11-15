@@ -1,6 +1,6 @@
 // app/api/sendNotification/route.js
 import { connectToDB } from '@/lib/mongodb';
-import Token from '@/models/Token';
+import Token from '@/app/api/models/Token';
 
 
 const FCM_URL = 'https://fcm.googleapis.com/fcm/send';
