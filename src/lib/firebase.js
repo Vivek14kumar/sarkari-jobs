@@ -1,49 +1,35 @@
-// firebase.js
-import { initializeApp } from "firebase/app";
-import { getMessaging, getToken, onMessage } from "firebase/messaging";
+import { initializeApp } from "https://www.gstatic.com/firebasejs/9.24.0/firebase-app-compat.js";
+import { getMessaging, getToken, onMessage } from "https://www.gstatic.com/firebasejs/9.24.0/firebase-messaging-compat.js";
 
-let app = null;
-let messaging = null;
+const firebaseConfig = {
+  apiKey: "AIzaSyB59UYg3ERnPAfhZXM0NR6_2boQzp_amh4",
+  authDomain: "results-hub-job.firebaseapp.com",
+  projectId: "results-hub-job",
+  storageBucket: "results-hub-job.appspot.com",
+  messagingSenderId: "949728586046",
+  appId: "1:949728586046:web:bafd0e6a281c9a4f2b246f"
+};
 
-export function initFirebase() {
-  if (typeof window === "undefined") return;
+const app = initializeApp(firebaseConfig);
+const messaging = getMessaging(app);
 
-  if (!app) {
-    const firebaseConfig = {
-      apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
-      authDomain: process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN,
-      projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID,
-      storageBucket: process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET,
-      messagingSenderId: process.env.NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID,
-      appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID,
-    };
+// ---- THIS PART SHOWS THE POPUP ----
+Notification.requestPermission().then((permission) => {
+  if (permission === "granted") {
+    console.log("Notification permission granted.");
 
-    console.log("🔥 Firebase Config Loaded:", firebaseConfig);
+    getToken(messaging, {
+      vapidKey: "BHYSaJN4NumqCEjGb3BXRQudWwBTRVp0gHCM0VQ-3sjMafxJQJbQfgkrn2uInwVnh4h8B-IXVuIk4i1zr63s_Wg",
+    }).then((currentToken) => {
+      if (currentToken) {
+        console.log("FCM Token:", currentToken);
 
-    app = initializeApp(firebaseConfig);
-    messaging = getMessaging(app);
-
-    console.log("🔥 Firebase Initialized");
-  }
-}
-
-export async function requestNotificationToken() {
-  try {
-    if (!messaging) initFirebase();
-
-    const token = await getToken(messaging, {
-      vapidKey: process.env.NEXT_PUBLIC_FIREBASE_VAPID_KEY,
+        // Save the token to database
+      } else {
+        console.log("No registration token available.");
+      }
     });
-
-    console.log("🔑 FCM Token:", token);
-    return token;
-  } catch (err) {
-    console.error("❌ Token Error:", err);
-    return null;
+  } else {
+    console.log("Notification permission denied.");
   }
-}
-
-export function onMessageListener(cb) {
-  if (!messaging) initFirebase();
-  return onMessage(messaging, cb);
-}
+});
