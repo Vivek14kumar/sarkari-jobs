@@ -15,7 +15,8 @@ async function sendFCMMessage(tokens, payload) {
 
   // Parse service account JSON
   const serviceAccount = JSON.parse(process.env.FCM_SERVICE_ACCOUNT_JSON);
-  serviceAccount.private_key = serviceAccount.private_key.replace(/\\n/g, "\n");
+  console.log(serviceAccount.private_key.includes("\n")); // should be true
+
 
   // Google Auth
   const auth = new google.auth.GoogleAuth({
