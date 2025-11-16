@@ -55,28 +55,74 @@ export default function SubscribePopup() {
   if (!open) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm">
-      <div className="bg-white dark:bg-gray-900 max-w-md w-11/12 rounded-2xl p-6 shadow-2xl">
-        <div className="flex items-start gap-4">
-          <div className="flex-shrink-0">
-            <img src="/icons/bell.svg" alt="alerts" className="w-14 h-14"/>
-          </div>
-          <div className="flex-1">
-            <h3 className="text-lg font-semibold">Get Instant Job Alerts</h3>
-            <p className="text-sm text-gray-600 dark:text-gray-300 mt-2">Tap <strong>Allow</strong> so you never miss high paying government jobs.</p>
+  <div className="fixed top-0 inset-x-0 z-50 flex justify-center animate-slideDown">
+    <div className="bg-white dark:bg-gray-900 w-full max-w-2xl mx-auto 
+      border-b border-gray-200 dark:border-gray-700 shadow-md rounded-b-3xl 
+      px-5 py-4 flex items-start gap-4">
 
-            <div className="mt-4 flex gap-3">
-              <button onClick={handleSubscribe} className="flex-1 py-2 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-medium">
-                {status === "asking" ? "Waiting..." : "Allow Notification"}
-              </button>
-              <button onClick={handleClose} className="py-2 px-4 rounded-xl border">Maybe Later</button>
-            </div>
+      {/* Icon */}
+      <div className="p-2 rounded-xl bg-blue-600/10">
+        <img src="/icons/bell.svg" className="w-8 h-8" />
+      </div>
 
-            {status === "denied" && <p className="mt-2 text-xs text-red-600">You denied notifications. Ask users to enable from browser settings.</p>}
-            {status === "subscribed" && <p className="mt-2 text-xs text-green-600">You're subscribed — thank you!</p>}
-          </div>
+      {/* Text */}
+      <div className="flex-1">
+        <h3 className="text-base font-bold text-gray-900 dark:text-white">
+          Get Instant Government Job Alerts  
+        </h3>
+
+        <p className="text-xs text-gray-600 dark:text-gray-300 mt-1 leading-snug">
+          सरकारी नौकरी, योजना, एडमिट कार्ड, रिजल्ट — सबकुछ सबसे पहले पाएं!  
+        </p>
+
+        {/* Buttons */}
+        <div className="mt-3 flex gap-3">
+          <button
+            onClick={handleSubscribe}
+            className="flex-1 py-2 rounded-lg bg-gradient-to-r from-blue-600 to-indigo-600 
+            text-white text-sm font-semibold shadow-md shadow-blue-600/20 
+            hover:opacity-90 transition-all"
+          >
+            {status === "asking" ? "Requesting..." : "Allow Notifications"}
+          </button>
+
+          <button
+            onClick={handleClose}
+            className="px-4 py-2 rounded-lg border text-sm text-gray-700 dark:text-gray-300 
+            hover:bg-gray-100 dark:hover:bg-gray-800 transition-all"
+          >
+            Later
+          </button>
         </div>
+
+        {/* Status Messages */}
+        {status === "denied" && (
+          <p className="mt-2 text-xs text-red-600">
+            Notifications blocked — enable manually.  
+            (आपने Allow नहीं किया)
+          </p>
+        )}
+
+        {status === "subscribed" && (
+          <p className="mt-2 text-xs text-green-600 font-medium">
+            You're subscribed — Thank you! ❤️  
+            (आप सफलतापूर्वक जुड़ गए)
+          </p>
+        )}
       </div>
     </div>
-  );
+
+    {/* Animations */}
+    <style>{`
+      .animate-slideDown {
+        animation: slideDown 0.45s ease-out;
+      }
+      @keyframes slideDown {
+        from { transform: translateY(-100%); opacity: 0; }
+        to { transform: translateY(0); opacity: 1; }
+      }
+    `}</style>
+  </div>
+);
+
 }
