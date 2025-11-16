@@ -1,6 +1,6 @@
 "use client";
 import { useEffect, useState } from "react";
-import { initFirebase, requestNotificationToken } from "@/firebase";
+import { initFirebase, requestNotificationToken } from "@/lib/firebase";
 
 export default function SubscribePopup() {
   const [open, setOpen] = useState(false);
