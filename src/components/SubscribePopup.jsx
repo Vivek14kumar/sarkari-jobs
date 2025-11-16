@@ -62,13 +62,13 @@ export default function SubscribePopup() {
 
       {/* Icon */}
       <div className="p-2 rounded-xl bg-blue-600/10">
-        <img src="/icons/bell.svg" className="w-8 h-8" />
+        <img src="/bell.svg" className="w-8 h-8" />
       </div>
 
       {/* Text */}
       <div className="flex-1">
         <h3 className="text-base font-bold text-gray-900 dark:text-white">
-          Get Instant Government Job Alerts  
+          Get Instant Government Jobs, Yojna, Admit Cards, Results Alerts  
         </h3>
 
         <p className="text-xs text-gray-600 dark:text-gray-300 mt-1 leading-snug">
