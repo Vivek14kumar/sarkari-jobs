@@ -10,8 +10,8 @@ async function sendAutoNotification(job) {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
-        title: job.title,
-        body: `New ${job.category} recruitment released. Tap to view details.`,
+        title: job.title_en,
+        body: `${job.title_hi} – ${job.category} recruitment released. Tap to view details.`,
         url: `https://resultshub.in/jobs/${job.slug}`,
         data: {
           jobId: job._id.toString(),
@@ -20,7 +20,7 @@ async function sendAutoNotification(job) {
       }),
     });
 
-    console.log("📢 Notification sent for:", job.title);
+    console.log("📢 Notification sent for:", job.title_en);
   } catch (err) {
     console.error("❌ Notification sending failed:", err);
   }
