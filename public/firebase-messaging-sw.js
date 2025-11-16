@@ -12,21 +12,56 @@ firebase.initializeApp({
 
 const messaging = firebase.messaging();
 
+// 🔥 Handle background notifications
 messaging.onBackgroundMessage((payload) => {
-  console.log("[SW] Background message:", payload);
+  console.log("[Service Worker] Background message:", payload);
 
-  const title = payload.notification?.title || "Resultshub";
+  const title =
+    payload.notification?.title ||
+    payload.data?.title ||
+    "Resultshub Notification";
+
+  const body =
+    payload.notification?.body ||
+    payload.data?.body ||
+    "Tap to open the update";
+
+  const url =
+    payload.data?.url ||
+    payload.notification?.click_action ||
+    "https://resultshub.in/";
+
   const options = {
-    body: payload.notification?.body || "",
+    body: body,
     icon: "/icons/icon-192.png",
-    data: payload.data || {},
+    badge: "/icons/badge.png", // optional
+    vibrate: [100, 50, 100],
+    data: { url },
+    requireInteraction: false, // notification auto closes
+    tag: payload.data?.tag || "resultshub-notification",
+    renotify: false
   };
 
   self.registration.showNotification(title, options);
 });
 
+// 🔥 Notification click handler
 self.addEventListener("notificationclick", (event) => {
   event.notification.close();
-  const link = event.notification.data?.url || "/";
-  event.waitUntil(clients.openWindow(link));
+  const urlToOpen = event.notification.data?.url || "https://resultshub.in/";
+
+  event.waitUntil(
+    clients.matchAll({ type: "window", includeUncontrolled: true }).then((windowClients) => {
+      // If website tab already open → focus it
+      for (const client of windowClients) {
+        if (client.url === urlToOpen && "focus" in client) {
+          return client.focus();
+        }
+      }
+      // Else open new tab
+      if (clients.openWindow) {
+        return clients.openWindow(urlToOpen);
+      }
+    })
+  );
 });

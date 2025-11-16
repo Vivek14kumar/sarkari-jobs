@@ -2,6 +2,30 @@ import Job from "@/app/api/models/Job";
 import { NextResponse } from "next/server";
 import { connectToDB } from "@/lib/mongodb.js";
 
+// 🔥 Helper: Send notification through your existing route
+async function sendAutoNotification(job) {
+  try {
+    // Send to your own API route
+    await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/sendNotification`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        title: job.title,
+        body: `New ${job.category} recruitment released. Tap to view details.`,
+        url: `https://resultshub.in/jobs/${job.slug}`,
+        data: {
+          jobId: job._id.toString(),
+          category: job.category,
+        }
+      }),
+    });
+
+    console.log("📢 Notification sent for:", job.title);
+  } catch (err) {
+    console.error("❌ Notification sending failed:", err);
+  }
+}
+
 // 🟢 Create a new job
 export async function POST(req) {
   try {
@@ -11,6 +35,9 @@ export async function POST(req) {
     // Create new job document
     const newJob = await Job.create(data);
 
+    // 🔥 Fire notification (non-blocking)
+    sendAutoNotification(newJob);
+    
     return NextResponse.json({ success: true, job: newJob }, { status: 201 });
   } catch (error) {
     console.error("Error saving job:", error);
