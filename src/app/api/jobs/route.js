@@ -6,7 +6,7 @@ import { connectToDB } from "@/lib/mongodb.js";
 async function sendAutoNotification(job) {
   try {
     // Send to your own API route
-    await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/sendNotification`, {
+    await fetch(`${process.env.NEXT_PUBLIC_SITE_URL}/api/sendNotification`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
@@ -37,7 +37,7 @@ export async function POST(req) {
 
     // 🔥 Fire notification (non-blocking)
     sendAutoNotification(newJob);
-    
+
     return NextResponse.json({ success: true, job: newJob }, { status: 201 });
   } catch (error) {
     console.error("Error saving job:", error);
