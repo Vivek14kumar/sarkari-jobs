@@ -1,5 +1,6 @@
-import { initializeApp } from "https://www.gstatic.com/firebasejs/9.24.0/firebase-app-compat.js";
-import { getMessaging, getToken, onMessage } from "https://www.gstatic.com/firebasejs/9.24.0/firebase-messaging-compat.js";
+// /firebase.js
+import { initializeApp } from "firebase/app";
+import { getMessaging, getToken, onMessage } from "firebase/messaging";
 
 const firebaseConfig = {
   apiKey: "AIzaSyB59UYg3ERnPAfhZXM0NR6_2boQzp_amh4",
@@ -10,26 +11,32 @@ const firebaseConfig = {
   appId: "1:949728586046:web:bafd0e6a281c9a4f2b246f"
 };
 
-const app = initializeApp(firebaseConfig);
-const messaging = getMessaging(app);
+let messaging;
 
-// ---- THIS PART SHOWS THE POPUP ----
-Notification.requestPermission().then((permission) => {
-  if (permission === "granted") {
-    console.log("Notification permission granted.");
+export const initFirebase = () => {
+  const app = initializeApp(firebaseConfig);
+  messaging = getMessaging(app);
+};
 
-    getToken(messaging, {
-      vapidKey: "BHYSaJN4NumqCEjGb3BXRQudWwBTRVp0gHCM0VQ-3sjMafxJQJbQfgkrn2uInwVnh4h8B-IXVuIk4i1zr63s_Wg",
-    }).then((currentToken) => {
-      if (currentToken) {
-        console.log("FCM Token:", currentToken);
+// ⚠ REQUEST PERMISSION
+export async function requestNotificationToken() {
+  try {
+    console.log("Requesting permission...");
 
-        // Save the token to database
-      } else {
-        console.log("No registration token available.");
-      }
+    const permission = await Notification.requestPermission();
+    if (permission !== "granted") {
+      console.warn("Permission not granted");
+      return null;
+    }
+
+    const token = await getToken(messaging, {
+      vapidKey: "BHYSaJN4NumqCEjGb3BXRQudWwBTRVp0gHCM0VQ-3sjMafxJQJbQfgkrn2uInwVnh4h8B-IXVuIk4i1zr63s_Wg"
     });
-  } else {
-    console.log("Notification permission denied.");
+
+    console.log("TOKEN:", token);
+    return token;
+  } catch (error) {
+    console.error("Error getting token:", error);
+    return null;
   }
-});
+}

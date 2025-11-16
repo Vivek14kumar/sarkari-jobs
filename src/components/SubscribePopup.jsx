@@ -14,25 +14,36 @@ export default function SubscribePopup() {
   }, []);
 
   const handleSubscribe = async () => {
-    setStatus("asking");
-    const token = await requestNotificationToken();
-    if (!token) {
-      setStatus("denied");
-      return;
-    }
-    const res = await fetch("/api/saveToken", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ token }),
-    });
-    if (res.ok) {
-      setStatus("subscribed");
-      localStorage.setItem("notif-dismissed", "1");
-      setTimeout(() => setOpen(false), 900);
-    } else {
-      setStatus("error");
-    }
-  };
+  setStatus("asking");
+
+  // ⚠ MUST BE CALLED OR BROWSER WILL NOT SHOW ALLOW POPUP
+  const permission = await Notification.requestPermission();
+  if (permission !== "granted") {
+    setStatus("denied");
+    return;
+  }
+
+  const token = await requestNotificationToken();
+  if (!token) {
+    setStatus("denied");
+    return;
+  }
+
+  const res = await fetch("/api/saveToken", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ token }),
+  });
+
+  if (res.ok) {
+    setStatus("subscribed");
+    localStorage.setItem("notif-dismissed", "1");
+    setTimeout(() => setOpen(false), 900);
+  } else {
+    setStatus("error");
+  }
+};
+
 
   const handleClose = () => {
     localStorage.setItem("notif-dismissed", "1");

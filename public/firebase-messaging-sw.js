@@ -1,5 +1,5 @@
-importScripts("https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js");
-importScripts("https://www.gstatic.com/firebasejs/8.10.1/firebase-messaging.js");
+importScripts("https://www.gstatic.com/firebasejs/9.24.0/firebase-app-compat.js");
+importScripts("https://www.gstatic.com/firebasejs/9.24.0/firebase-messaging-compat.js");
 
 firebase.initializeApp({
   apiKey: "AIzaSyB59UYg3ERnPAfhZXM0NR6_2boQzp_amh4",
@@ -15,7 +15,7 @@ const messaging = firebase.messaging();
 messaging.onBackgroundMessage((payload) => {
   const title = payload.notification?.title || "Resultshub";
   const options = {
-    body: payload.notification?.body || "",
+    body: payload.notification?.body,
     icon: "/icons/icon-192.png",
     data: payload.data
   };
