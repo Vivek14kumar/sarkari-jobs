@@ -1,30 +1,32 @@
+// /src/app/api/sendNotification/route.js
 import { google } from "googleapis";
 import { connectToDB } from "@/lib/mongodb";
 import Token from "@/app/api/models/Token";
 
-// FCM v1 URL
-const FCM_URL = "https://fcm.googleapis.com/v1/projects/YOUR_PROJECT_ID/messages:send";
-
-// Helper: send message via Firebase v1
+/**
+ * Send FCM notifications via Firebase HTTP v1 API
+ * @param {string[]} tokens - Array of FCM tokens
+ * @param {object} payload - { title, body, url, data }
+ */
 async function sendFCMMessage(tokens, payload) {
-  // Parse service account from env
   if (!process.env.FCM_SERVICE_ACCOUNT_JSON) {
     throw new Error("FCM_SERVICE_ACCOUNT_JSON missing");
   }
 
+  // Parse service account JSON
   const serviceAccount = JSON.parse(process.env.FCM_SERVICE_ACCOUNT_JSON);
   serviceAccount.private_key = serviceAccount.private_key.replace(/\\n/g, "\n");
 
-  // Auth client
+  // Google Auth
   const auth = new google.auth.GoogleAuth({
     credentials: serviceAccount,
     scopes: ["https://www.googleapis.com/auth/firebase.messaging"],
   });
-
   const client = await auth.getClient();
+  const accessToken = (await client.getAccessToken()).token;
 
-  // Loop through tokens
   const results = [];
+
   for (const token of tokens) {
     const body = {
       message: {
@@ -37,37 +39,44 @@ async function sendFCMMessage(tokens, payload) {
           ...payload.data,
           url: payload.url,
         },
-        android: {
-          priority: "high",
-        },
-        apns: {
-          headers: { "apns-priority": "10" },
-        },
+        android: { priority: "high" },
+        apns: { headers: { "apns-priority": "10" } },
       },
     };
 
-    const res = await fetch(
-      `https://fcm.googleapis.com/v1/projects/${serviceAccount.project_id}/messages:send`,
-      {
-        method: "POST",
-        headers: {
-          "Authorization": `Bearer ${await client.getAccessToken()}`,
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(body),
-      }
-    );
+    try {
+      const res = await fetch(
+        `https://fcm.googleapis.com/v1/projects/${serviceAccount.project_id}/messages:send`,
+        {
+          method: "POST",
+          headers: {
+            "Authorization": `Bearer ${accessToken}`,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(body),
+        }
+      );
 
-    results.push(await res.json());
+      let result;
+      try {
+        result = await res.json();
+      } catch {
+        result = { error: `HTTP ${res.status}` };
+      }
+
+      results.push(result);
+
+    } catch (err) {
+      results.push({ error: err.message });
+    }
   }
 
   return results;
 }
 
-// Cleanup invalid tokens (optional)
+// Remove invalid tokens
 async function cleanupInvalidTokens(tokens, responses) {
   const toDelete = [];
-
   responses.forEach((res, idx) => {
     if (res.error) {
       toDelete.push(tokens[idx]);
@@ -97,16 +106,13 @@ export async function POST(req) {
       return new Response(JSON.stringify({ success: true, sent: 0 }), { status: 200 });
     }
 
+    // Send notifications
     const responses = await sendFCMMessage(allTokens, { title, body: message, url, data });
+
+    // Cleanup invalid tokens
     await cleanupInvalidTokens(allTokens, responses);
 
-    return new Response(
-      JSON.stringify({
-        success: true,
-        sent: allTokens.length,
-      }),
-      { status: 200 }
-    );
+    return new Response(JSON.stringify({ success: true, sent: allTokens.length }), { status: 200 });
 
   } catch (err) {
     console.error("SEND NOTIFICATION ERROR:", err);
