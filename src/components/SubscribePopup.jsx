@@ -16,14 +16,17 @@ export default function SubscribePopup() {
   const handleSubscribe = async () => {
   setStatus("asking");
 
-  // ⚠ MUST BE CALLED OR BROWSER WILL NOT SHOW ALLOW POPUP
+  // ⚠ MUST BE FIRST — inside user click
   const permission = await Notification.requestPermission();
+
   if (permission !== "granted") {
     setStatus("denied");
     return;
   }
 
+  // Now safe to request FCM token
   const token = await requestNotificationToken();
+
   if (!token) {
     setStatus("denied");
     return;
@@ -43,7 +46,6 @@ export default function SubscribePopup() {
     setStatus("error");
   }
 };
-
 
   const handleClose = () => {
     localStorage.setItem("notif-dismissed", "1");
