@@ -78,6 +78,7 @@ export async function POST(req) {
         total: allTokens.length,
       }),
       { status: 200 }
+      
     );
   } catch (err) {
     console.error("SEND NOTIFICATION ERROR:", err);
