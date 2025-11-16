@@ -6,6 +6,7 @@ import { Analytics } from "@vercel/analytics/next"
 //import Head from "next/head";
 import CanonicalHead from "@/components/CanonicalHead";
 import ServiceWorkerRegister from "@/components/ServiceWorkerRegister";
+import SubscribePopup from "./components/SubscribePopup";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -46,7 +47,7 @@ export default function RootLayout({ children }) {
         <ServiceWorkerRegister />
         {/* Navbar wrapper handles client-side navbar switching */}
         <NavbarWrapper />
-
+        <SubscribePopup />
         {/* Main Content */}
         <main className="flex-1">{children}</main>
 
