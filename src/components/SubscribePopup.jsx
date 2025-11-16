@@ -7,50 +7,77 @@ export default function SubscribePopup() {
   const [status, setStatus] = useState("");
 
   useEffect(() => {
-    initFirebase();
-    // show popup to users who haven't dismissed (simple: show once)
-    const dismissed = localStorage.getItem("notif-dismissed");
-    if (!dismissed) setTimeout(() => setOpen(true), 1200);
-  }, []);
+  initFirebase();
+
+  // 1) Do not show if already subscribed
+  if (localStorage.getItem("notif-subscribed") === "1") return;
+
+  // 2) Do not show on certain pages
+  const blockedPages = ["/privacy", "/terms", "/contact"];
+  if (blockedPages.includes(window.location.pathname)) return;
+
+  // 3) If browser notifications already enabled → no popup
+  if (Notification.permission === "granted") return;
+
+  // 4) Limit popup to 3 times per day
+  const viewData = JSON.parse(localStorage.getItem("notif-views") || "{}");
+  const today = new Date().toDateString();
+
+  if (viewData.date === today && viewData.count >= 3) return;
+
+  // 5) Show again after 2 hours if Later was clicked
+  const next = localStorage.getItem("notif-next-popup");
+  const now = Date.now();
+
+  if (next && now < Number(next)) return;
+
+  // 6) Update popup view counter
+  const updated = {
+    date: today,
+    count: viewData.date === today ? viewData.count + 1 : 1,
+  };
+  localStorage.setItem("notif-views", JSON.stringify(updated));
+
+  setTimeout(() => setOpen(true), 1000);
+}, []);
+
 
   const handleSubscribe = async () => {
   setStatus("asking");
 
-  // ⚠ MUST BE FIRST — inside user click
   const permission = await Notification.requestPermission();
-
   if (permission !== "granted") {
     setStatus("denied");
     return;
   }
 
-  // Now safe to request FCM token
   const token = await requestNotificationToken();
-
   if (!token) {
-    setStatus("denied");
+    setStatus("error");
     return;
   }
 
-  const res = await fetch("/api/saveToken", {
+  await fetch("/api/saveToken", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ token }),
   });
 
-  if (res.ok) {
-    setStatus("subscribed");
-    localStorage.setItem("notif-dismissed", "1");
-    setTimeout(() => setOpen(false), 900);
-  } else {
-    setStatus("error");
-  }
+  // Save status
+  localStorage.setItem("notif-subscribed", "1");
+
+  setStatus("subscribed");
+
+  setTimeout(() => setOpen(false), 1000); // smooth close
 };
 
+
   const handleClose = () => {
-    localStorage.setItem("notif-dismissed", "1");
-    setOpen(false);
-  };
+  const nextTime = Date.now() + 2 * 60 * 60 * 1000; // 2 hours
+  localStorage.setItem("notif-next-popup", nextTime);
+  setOpen(false);
+};
+
 
   if (!open) return null;
 
