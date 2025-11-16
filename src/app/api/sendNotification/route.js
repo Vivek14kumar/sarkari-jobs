@@ -1,120 +1,88 @@
+import { google } from "google-auth-library";
 import { connectToDB } from "@/lib/mongodb";
 import Token from "@/app/api/models/Token";
 
-const FCM_URL = "https://fcm.googleapis.com/fcm/send";
-const SERVER_KEY = process.env.FCM_SERVER_KEY;
+const serviceAccount = JSON.parse(process.env.FCM_SERVICE_ACCOUNT_JSON);
 
-// ------------ SEND A BATCH OF 1000 TOKENS -----------------
-async function sendBatch(tokens, payload) {
-  const body = {
-    registration_ids: tokens,
-    notification: {
-      title: payload.title,
-      body: payload.body,
-      icon: "/icons/icon-192.png",
-    },
-    data: {
-      ...payload.data,
-      url: payload.url, // Important for click
-    },
-    priority: "high",
-  };
+const SCOPES = ["https://www.googleapis.com/auth/firebase.messaging"];
 
-  const res = await fetch(FCM_URL, {
-    method: "POST",
-    headers: {
-      Authorization: `key=${SERVER_KEY}`,
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(body),
-  });
+async function getAccessToken() {
+  const client = new google.auth.JWT(
+    serviceAccount.client_email,
+    null,
+    serviceAccount.private_key,
+    SCOPES
+  );
 
-  return res.json();
+  const token = await client.authorize();
+  return token.access_token;
 }
 
-// ------------ REMOVE INVALID FCM TOKENS AUTOMATICALLY -----------------
-async function cleanupInvalidTokens(tokens, responses) {
-  const toDelete = [];
+// -------- SEND NOTIFICATION USING FCM v1 ------------
+async function sendMessage(token, payload) {
+  const accessToken = await getAccessToken();
 
-  for (let b = 0; b < responses.length; b++) {
-    const batchRes = responses[b];
+  const projectId = serviceAccount.project_id;
 
-    if (!batchRes.results) continue;
+  const res = await fetch(
+    `https://fcm.googleapis.com/v1/projects/${projectId}/messages:send`,
+    {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        message: {
+          token,
+          notification: {
+            title: payload.title,
+            body: payload.body,
+          },
+          data: payload.data,
+        },
+      }),
+    }
+  );
 
-    batchRes.results.forEach((r, idx) => {
-      if (r.error) {
-        const token = tokens[b][idx];
-        console.log("🔥 Removing invalid FCM token:", token);
-        toDelete.push(token);
-      }
-    });
-  }
-
-  if (toDelete.length > 0) {
-    await Token.deleteMany({ token: { $in: toDelete } });
-    console.log(`🧹 Cleaned ${toDelete.length} invalid tokens`);
-  }
+  return await res.json();
 }
 
-// --------------------- MAIN POST -------------------------
+// ---------------- MAIN POST -----------------
 export async function POST(req) {
-  if (!SERVER_KEY)
-    return new Response(
-      JSON.stringify({ error: "FCM_SERVER_KEY missing" }),
-      { status: 500 }
-    );
-
   try {
     const body = await req.json();
-    const title = body.title || "New Job Alert";
-    const message = body.body || "A new vacancy is available on resultshub.in";
-    const url = body.url || "https://resultshub.in";
-    const data = body.data || {};
+    const { title, body: message, data } = body;
 
     await connectToDB();
     const tokens = await Token.find().select("token -_id");
 
     const allTokens = tokens.map((t) => t.token).filter(Boolean);
 
-    if (allTokens.length === 0) {
-      return new Response(
-        JSON.stringify({ success: true, sent: 0 }),
-        { status: 200 }
-      );
-    }
+    let successCount = 0;
 
-    // Split into batches of 1000
-    const batches = [];
-    for (let i = 0; i < allTokens.length; i += 1000) {
-      batches.push(allTokens.slice(i, i + 1000));
-    }
-
-    const responses = [];
-    for (const batch of batches) {
-      const result = await sendBatch(batch, {
+    for (const token of allTokens) {
+      const result = await sendMessage(token, {
         title,
         body: message,
-        url,
-        data,
+        data: data || {},
       });
-      responses.push(result);
-    }
 
-    // 🔥 Remove invalid & expired tokens
-    await cleanupInvalidTokens(batches, responses);
+      if (result.name !== "error") successCount++;
+    }
 
     return new Response(
       JSON.stringify({
         success: true,
-        batchCount: responses.length,
-        sent: allTokens.length,
+        sent: successCount,
+        total: allTokens.length,
       }),
       { status: 200 }
     );
   } catch (err) {
     console.error("SEND NOTIFICATION ERROR:", err);
     return new Response(
-      JSON.stringify({ error: "Server error" }),
+      JSON.stringify({ error: "FCM v1 send failed" }),
       { status: 500 }
     );
   }
