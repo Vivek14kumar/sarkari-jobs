@@ -6,7 +6,7 @@ import { Analytics } from "@vercel/analytics/next"
 //import Head from "next/head";
 import CanonicalHead from "@/components/CanonicalHead";
 import ServiceWorkerRegister from "@/components/ServiceWorkerRegister";
-import SubscribePopup from "./components/SubscribePopup";
+import SubscribePopup from "@/components/SubscribePopup";
 
 const inter = Inter({ subsets: ["latin"] });
 
