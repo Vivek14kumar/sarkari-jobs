@@ -3,12 +3,10 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import LatestJobs from "@/components/LatestJobs";
 import SEOHead from "@/components/SEOHead";
-import dynamic from "next/dynamic";
+import { HomeJobSchema } from "@/components/HomeJobSchema";
 
 // ✅ Server Component for JobPosting Schema
-const HomeJobSchema = dynamic(() => import("@/components/HomeJobSchema"), {
-  ssr: true,
-});
+const schemaData = HomeJobSchema(job);
 
 const itemsPerLoad = 6;
 
@@ -236,7 +234,10 @@ export default function HomePage() {
       />
 
       {/* ✅ Google-readable JobPosting schema */}
-      <HomeJobSchema jobs={jobs} />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(schemaData) }}
+      />
 
       <main className="max-w-6xl mx-auto p-4">
         {/* Animated Heading */}
