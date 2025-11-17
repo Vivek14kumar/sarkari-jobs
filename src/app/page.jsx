@@ -5,6 +5,11 @@ import LatestJobs from "@/components/LatestJobs";
 import SEOHead from "@/components/SEOHead";
 import dynamic from "next/dynamic";
 
+// ✅ Server Component for JobPosting Schema
+const HomeJobSchema = dynamic(() => import("@/components/HomeJobSchema"), {
+  ssr: true,
+});
+
 const itemsPerLoad = 6;
 
 export default function HomePage() {
@@ -22,10 +27,7 @@ export default function HomePage() {
 
   const headings = ["Welcome to Results Hub", "रिजल्ट हब में आपका स्वागत है"];
 
-  const HomeJobSchema = dynamic(() => import("@/components/HomeJobSchema"), {
-  ssr: true,
-});
-
+  // Animated heading
   useEffect(() => {
     const interval = setInterval(() => {
       setCurrentHeading((prev) => (prev + 1) % headings.length);
@@ -33,6 +35,7 @@ export default function HomePage() {
     return () => clearInterval(interval);
   }, []);
 
+  // Fetch data
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -231,8 +234,9 @@ export default function HomePage() {
         image="/images/home-og.jpg"
         url="https://resultshub.in"
       />
-      {/* Render schema (server-side) */}
-    <HomeJobSchema jobs={jobs} />
+
+      {/* ✅ Google-readable JobPosting schema */}
+      <HomeJobSchema jobs={jobs} />
 
       <main className="max-w-6xl mx-auto p-4">
         {/* Animated Heading */}
@@ -262,7 +266,7 @@ export default function HomePage() {
               <h2 className="text-2xl font-bold text-blue-800 mb-4  rounded-full text-center p-1 bg-[#f6e7d2]">
                 Latest Jobs / नवीनतम नौकरियाँ
               </h2>
-              <LatestJobs limit={6} />
+              <LatestJobs limit={itemsPerLoad} />
 
               <div className="flex justify-center mt-6">
                 <Link
