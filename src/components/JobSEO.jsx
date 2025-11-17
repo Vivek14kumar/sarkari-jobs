@@ -2,7 +2,9 @@
 export default function JobSEO({ jobData }) {
   if (!jobData) return null;
 
-  const datePosted = jobData.startDate ? new Date(jobData.startDate).toISOString().split("T")[0] : undefined;
+  const date = jobData.startDate || jobData.createdAt;
+const datePosted = date ? new Date(date).toISOString().split("T")[0] : undefined;
+
   const validThrough = jobData.lastDate ? new Date(jobData.lastDate).toISOString().split("T")[0] : undefined;
 
   const hiringOrganization =
