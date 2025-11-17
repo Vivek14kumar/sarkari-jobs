@@ -5,19 +5,19 @@ export default function HomeJobSchema({ jobs }) {
   const jobList = jobs.slice(0, 4).map((job, index) => {
     const hiringOrg =
       job.extra_info?.find(x =>
-        x.key.toLowerCase().includes("hiring")
-      )?.value || "Organization";
+        x.key.toLowerCase().includes("hiring organization")
+      )?.value || "ResultsHub";
 
     const jobLocation =
       job.extra_info?.find(x =>
-        x.key.toLowerCase().includes("location")
+        x.key.toLowerCase().includes("job location")
       )?.value || "India";
 
     return {
       "@type": "JobPosting",
       "position": index + 1,
       "title": job.title_en,
-      "description": job.description_en || job.description_hi,
+      "description": job.description_en || job.description_hi ||  "Latest government job update by ResultsHub.",
       "datePosted": job.startDate,
       "validThrough": job.lastDate || job.startDate,
       "employmentType": "FULL_TIME",
