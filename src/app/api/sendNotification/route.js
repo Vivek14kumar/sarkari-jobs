@@ -14,17 +14,24 @@ async function sendFCMMessage(tokens, payload) {
   }
 
   // Parse service account JSON
-  const serviceAccount = JSON.parse(process.env.FCM_SERVICE_ACCOUNT_JSON);
-  console.log(serviceAccount.private_key.includes("\n")); // should be true
+  const raw = JSON.parse(process.env.FCM_SERVICE_ACCOUNT_JSON);
 
+  // VERY IMPORTANT: Fix private key newlines
+  raw.private_key = raw.private_key.replace(/\\n/g, "\n");
 
-  // Google Auth
+  // Initialize Google Auth correctly
   const auth = new google.auth.GoogleAuth({
-    credentials: serviceAccount,
+    credentials: {
+      client_email: raw.client_email,
+      private_key: raw.private_key,
+    },
+    projectId: raw.project_id,
     scopes: ["https://www.googleapis.com/auth/firebase.messaging"],
   });
+
+  // Get OAuth Access Token
   const client = await auth.getClient();
-  const accessToken = (await client.getAccessToken()).token;
+  const { token: accessToken } = await client.getAccessToken();
 
   const results = [];
 
@@ -47,11 +54,11 @@ async function sendFCMMessage(tokens, payload) {
 
     try {
       const res = await fetch(
-        `https://fcm.googleapis.com/v1/projects/${serviceAccount.project_id}/messages:send`,
+        `https://fcm.googleapis.com/v1/projects/${raw.project_id}/messages:send`,
         {
           method: "POST",
           headers: {
-            "Authorization": `Bearer ${accessToken}`,
+            Authorization: `Bearer ${accessToken}`,
             "Content-Type": "application/json",
           },
           body: JSON.stringify(body),
@@ -75,9 +82,10 @@ async function sendFCMMessage(tokens, payload) {
   return results;
 }
 
-// Remove invalid tokens
+// Remove invalid tokens from database
 async function cleanupInvalidTokens(tokens, responses) {
   const toDelete = [];
+
   responses.forEach((res, idx) => {
     if (res.error) {
       toDelete.push(tokens[idx]);
@@ -94,29 +102,41 @@ async function cleanupInvalidTokens(tokens, responses) {
 export async function POST(req) {
   try {
     const body = await req.json();
+
     const title = body.title || "New Job Alert";
     const message = body.body || "A new vacancy is available on resultshub.in";
     const url = body.url || "https://resultshub.in";
     const data = body.data || {};
 
     await connectToDB();
+
     const tokens = await Token.find().select("token -_id");
-    const allTokens = tokens.map(t => t.token).filter(Boolean);
+    const allTokens = tokens.map((t) => t.token).filter(Boolean);
 
     if (allTokens.length === 0) {
       return new Response(JSON.stringify({ success: true, sent: 0 }), { status: 200 });
     }
 
     // Send notifications
-    const responses = await sendFCMMessage(allTokens, { title, body: message, url, data });
+    const responses = await sendFCMMessage(allTokens, {
+      title,
+      body: message,
+      url,
+      data,
+    });
 
     // Cleanup invalid tokens
     await cleanupInvalidTokens(allTokens, responses);
 
-    return new Response(JSON.stringify({ success: true, sent: allTokens.length }), { status: 200 });
+    return new Response(
+      JSON.stringify({ success: true, sent: allTokens.length }),
+      { status: 200 }
+    );
 
   } catch (err) {
     console.error("SEND NOTIFICATION ERROR:", err);
-    return new Response(JSON.stringify({ error: err.message || "Server error" }), { status: 500 });
+    return new Response(JSON.stringify({ error: err.message || "Server error" }), {
+      status: 500,
+    });
   }
 }
