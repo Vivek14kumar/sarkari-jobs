@@ -258,20 +258,36 @@ export default function HomePage() {
               <LatestJobs limit={4} />
 
               {/* ✅ ADD THIS BELOW */}
-  {jobs.length > 0 && (
+{jobs.length > 0 && (
   <script
     type="application/ld+json"
     dangerouslySetInnerHTML={{
-      __html: JSON.stringify({
-        "@context": "https://schema.org",
-        "@type": "ItemList",
-        "itemListElement": jobs.slice(0, 4).map((job, index) => ({
-          "@type": "ListItem",
-          "position": index + 1,
-          "url": `https://resultshub.in/jobs/${job.slug}`,
-          "name": job.title_en
+      __html: JSON.stringify(
+        jobs.slice(0, 4).map((job) => ({
+          "@context": "https://schema.org/",
+          "@type": "JobPosting",
+          "title": job.title_en,
+          "description": job.description_en || job.title_hi,
+          "datePosted": job.createdAt,
+          "validThrough": job.lastDate,
+          "employmentType": "Full-Time",
+          "hiringOrganization": {
+            "@type": "Organization",
+            "name": job.extra_info?.find(x => x.key.includes("Hiring"))?.value || "Government of India",
+            "sameAs": job.officialLink || "https://resultshub.in"
+          },
+          "jobLocation": {
+            "@type": "Place",
+            "address": {
+              "@type": "PostalAddress",
+              "addressLocality": job.extra_info?.find(x => x.key.includes("Job Location"))?.value || "India",
+              "addressCountry": "IN"
+            }
+          },
+          "totalJobOpenings": Number(job.totalPosts) || undefined,
+          "url": `https://resultshub.in/jobs/${job.slug}`
         }))
-      })
+      )
     }}
   />
 )}
