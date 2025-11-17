@@ -39,7 +39,9 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
-      <CanonicalHead />
+       <head>
+        <CanonicalHead />
+      </head>
       {/*<Head >
         <link rel="canonical" href="https://resultshub.in"/>
       </Head >*/}
