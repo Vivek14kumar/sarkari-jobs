@@ -3,8 +3,9 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import LatestJobs from "@/components/LatestJobs";
 import SEOHead from "@/components/SEOHead";
+import dynamic from "next/dynamic";
 
-const itemsPerLoad = 4;
+const itemsPerLoad = 6;
 
 export default function HomePage() {
   const [jobs, setJobs] = useState([]);
@@ -20,6 +21,10 @@ export default function HomePage() {
   const [visibleYojnas, setVisibleYojnas] = useState(itemsPerLoad);
 
   const headings = ["Welcome to Results Hub", "रिजल्ट हब में आपका स्वागत है"];
+
+  const HomeJobSchema = dynamic(() => import("@/components/HomeJobSchema"), {
+  ssr: true,
+});
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -226,6 +231,8 @@ export default function HomePage() {
         image="/images/home-og.jpg"
         url="https://resultshub.in"
       />
+      {/* Render schema (server-side) */}
+    <HomeJobSchema jobs={jobs} />
 
       <main className="max-w-6xl mx-auto p-4">
         {/* Animated Heading */}
@@ -255,42 +262,7 @@ export default function HomePage() {
               <h2 className="text-2xl font-bold text-blue-800 mb-4  rounded-full text-center p-1 bg-[#f6e7d2]">
                 Latest Jobs / नवीनतम नौकरियाँ
               </h2>
-              <LatestJobs limit={4} />
-
-              {/* ✅ ADD THIS BELOW */}
-{jobs.length > 0 && (
-  <script
-    type="application/ld+json"
-    dangerouslySetInnerHTML={{
-      __html: JSON.stringify(
-        jobs.slice(0, 4).map((job) => ({
-          "@context": "https://schema.org/",
-          "@type": "JobPosting",
-          "title": job.title_en,
-          "description": job.description_en || job.title_hi,
-          "datePosted": job.createdAt,
-          "validThrough": job.lastDate,
-          "employmentType": "Full-Time",
-          "hiringOrganization": {
-            "@type": "Organization",
-            "name": job.extra_info?.find(x => x.key.includes("Hiring"))?.value || "Government of India",
-            "sameAs": job.officialLink || "https://resultshub.in"
-          },
-          "jobLocation": {
-            "@type": "Place",
-            "address": {
-              "@type": "PostalAddress",
-              "addressLocality": job.extra_info?.find(x => x.key.includes("Job Location"))?.value || "India",
-              "addressCountry": "IN"
-            }
-          },
-          "totalJobOpenings": Number(job.totalPosts) || undefined,
-          "url": `https://resultshub.in/jobs/${job.slug}`
-        }))
-      )
-    }}
-  />
-)}
+              <LatestJobs limit={6} />
 
               <div className="flex justify-center mt-6">
                 <Link
