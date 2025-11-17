@@ -6,7 +6,8 @@ import SEOHead from "@/components/SEOHead";
 import { HomeJobSchema } from "@/components/HomeJobSchema";
 
 // ✅ Server Component for JobPosting Schema
-const schemaData = HomeJobSchema(job);
+
+//const schemaData = HomeJobSchema(job);
 
 const itemsPerLoad = 6;
 
@@ -60,7 +61,8 @@ export default function HomePage() {
     };
     fetchData();
   }, []);
-
+// ⭐ Generate JSON-LD only after jobs load
+  const jobSchemas = jobs.slice(0, 6).map((job) => HomeJobSchema(job));
   // ✅ Reusable Card Section
   const CardSection = ({
     title,
@@ -223,6 +225,8 @@ export default function HomePage() {
     );
   };
 
+  
+
   return (
     <>
       <SEOHead
@@ -233,11 +237,14 @@ export default function HomePage() {
         url="https://resultshub.in"
       />
 
-      {/* ✅ Google-readable JobPosting schema */}
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(schemaData) }}
-      />
+     {/* ⭐ MULTIPLE JSON-LD SCRIPTS FOR JOBS */}
+      {jobSchemas.map((schema, index) => (
+        <script
+          key={index}
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
+        />
+      ))}
 
       <main className="max-w-6xl mx-auto p-4">
         {/* Animated Heading */}
@@ -257,7 +264,7 @@ export default function HomePage() {
             </h1>
           ))}
         </div>
-
+          
         {loading ? (
           <p className="text-center py-10 text-gray-500">Loading...</p>
         ) : (
