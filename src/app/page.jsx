@@ -259,52 +259,23 @@ export default function HomePage() {
 
               {/* ✅ ADD THIS BELOW */}
   {jobs.length > 0 && (
-    <script
-      type="application/ld+json"
-      dangerouslySetInnerHTML={{
-        __html: JSON.stringify(
-          jobs.slice(0, 4).map((job) => ({
-            "@context": "https://schema.org/",
-            "@type": "JobPosting",
-            title: job.title_en,
-            description:
-              job.description_en ||
-              "Check complete details for the latest government recruitment.",
-            hiringOrganization: {
-              "@type": "Organization",
-              name:
-                job.extra_info?.find((item) =>
-                  item.key.toLowerCase().includes("hiring organization")
-                )?.value || "ResultsHub",
-              sameAs: "https://resultshub.in/",
-              logo: "https://resultshub.in/logo.png",
-            },
-            datePosted: new Date(job.startDate).toISOString().split("T")[0],
-            validThrough: new Date(job.lastDate).toISOString().split("T")[0],
-            employmentType: "FULL_TIME",
-            jobLocation: {
-              "@type": "Place",
-              address: {
-                "@type": "PostalAddress",
-                addressLocality:
-                  job.extra_info?.find((item) =>
-                    item.key.toLowerCase().includes("job location")
-                  )?.value || "India",
-                addressCountry: "IN",
-              },
-            },
-            totalJobOpenings: job.totalPosts,
-            url: `https://resultshub.in/jobs/${job.slug}`,
-            identifier: {
-              "@type": "PropertyValue",
-              name: "ResultsHub",
-              value: job._id,
-            },
-          }))
-        ),
-      }}
-    />
-  )}
+  <script
+    type="application/ld+json"
+    dangerouslySetInnerHTML={{
+      __html: JSON.stringify({
+        "@context": "https://schema.org",
+        "@type": "ItemList",
+        "itemListElement": jobs.slice(0, 4).map((job, index) => ({
+          "@type": "ListItem",
+          "position": index + 1,
+          "url": `https://resultshub.in/jobs/${job.slug}`,
+          "name": job.title_en
+        }))
+      })
+    }}
+  />
+)}
+
               <div className="flex justify-center mt-6">
                 <Link
                   href="/jobs"
