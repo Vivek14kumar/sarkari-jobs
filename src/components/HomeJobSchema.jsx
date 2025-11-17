@@ -18,8 +18,13 @@ export function HomeJobSchema(job) {
       `${job.title_en || "Job"} - Check eligibility, important dates, and apply online.`,
 
     // Dates
-    datePosted: job.startDate || new Date().toISOString().split("T")[0],
-    validThrough: job.lastDate || new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString().split("T")[0],
+    datePosted: job.startDate || job.createdAt
+      ? new Date(job.startDate || job.createdAt).toISOString().split("T")[0]
+      : undefined,
+
+    validThrough: job.lastDate || job.createdAt
+      ? new Date(job.lastDate || job.createdAt + 30 * 24 * 60 * 60 * 1000).toISOString().split("T")[0]
+      : undefined,
 
     // Employment type
     employmentType: (job.employmentType || "FULL_TIME").toUpperCase(),
