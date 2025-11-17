@@ -16,18 +16,15 @@ export default async function LatestJobsServer({ limit = 6 }) {
     console.error(err);
   }
 
-  // Generate JSON-LD for all jobs server-side
+  // Generate JSON-LD for all initial jobs server-side
   const jobsJsonLD = jobs.map((job) => HomeJobSchema(job));
 
   return (
     <>
-      {/* Server-side JSON-LD so Google sees it */}
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jobsJsonLD) }}
       />
-
-      {/* Client-side component only handles UI */}
       <LatestJobsClient initialJobs={jobs} />
     </>
   );

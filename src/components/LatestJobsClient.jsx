@@ -9,13 +9,11 @@ export default function LatestJobsClient({ initialJobs = [] }) {
   const [jobs, setJobs] = useState(initialJobs);
   const [visibleCount, setVisibleCount] = useState(initialJobs.length);
 
-  const handleLoadMore = () => {
-    setVisibleCount((prev) => prev + 6);
-  };
+  const handleLoadMore = () => setVisibleCount(prev => prev + 6);
 
   const visibleJobs = jobs.slice(0, visibleCount);
 
-  // Update JSON-LD dynamically if "Load More" is clicked
+  // Update JSON-LD dynamically for newly loaded jobs
   useEffect(() => {
     const scriptId = "jobs-json-ld";
     let script = document.getElementById(scriptId);
@@ -36,16 +34,15 @@ export default function LatestJobsClient({ initialJobs = [] }) {
 
   return (
     <>
-    <SEOHead
+      <SEOHead
         title="ResultsHub.in - Latest Sarkari Results & Government Jobs 2025"
         description="Check the latest Sarkari Results, Admit Cards, and Government Job Notifications in English & Hindi."
         keywords="Sarkari Result, Latest Jobs 2025, Admit Card, Govt Jobs, Sarkari Naukri"
         image="/images/home-og.jpg"
         url="https://resultshub.in"
       />
-    <div>
       <div className="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-        {visibleJobs.map((job) => (
+        {visibleJobs.map(job => (
           <JobCard key={job._id} job={job} className="flex-1" />
         ))}
       </div>
@@ -60,7 +57,6 @@ export default function LatestJobsClient({ initialJobs = [] }) {
           </button>
         </div>
       )}
-    </div>
     </>
   );
 }
