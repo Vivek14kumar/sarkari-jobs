@@ -1,3 +1,4 @@
+import AnimatedHeading from "@/components/AnimatedHeading";
 import LatestJobsServer from "@/components/LatestJobsServer";
 import AdmitCardsServer from "@/components/AdmitCardsServer";
 import ResultsServer from "@/components/ResultsServer";
@@ -7,6 +8,9 @@ import Link from "next/link";
 export default function HomePage() {
   return (
     <main className="max-w-6xl mx-auto p-4">
+      {/* Animated Heading Component */}
+      <AnimatedHeading />
+      
       {/* Latest Jobs */}
       <section className="mb-12">
         <h2 className="text-2xl font-bold text-blue-800 mb-4 rounded-full text-center p-1 bg-[#f6e7d2]">Latest Jobs / नवीनतम नौकरियाँ</h2>
