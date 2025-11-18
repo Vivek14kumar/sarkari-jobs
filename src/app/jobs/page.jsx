@@ -12,8 +12,13 @@ async function getJobs() {
 
 export default async function JobsPage() {
   const jobs = await getJobs();
-  // Generate JSON-LD for all initial jobs server-side
-  const jobsJsonLD = jobs.map((job) => HomeJobSchema(job));
+
+  // Create @graph structure
+  const jobsJsonLD = {
+    "@context": "https://schema.org",
+    "@graph": jobs.map(job => HomeJobSchema(job))
+  };
+
   return (
     <>
       <SEOHead
