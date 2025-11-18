@@ -6,15 +6,40 @@ import ResultAdmit from "../models/result-admit";
 // -----------------------------------------------------------
 // 🔥 AUTO NOTIFICATION HELPER (POST ONLY)
 // -----------------------------------------------------------
+// -----------------------------------------------------------
+// 🔥 AUTO NOTIFICATION HELPER (POST ONLY)
+// -----------------------------------------------------------
 async function sendAutoNotification(record) {
   try {
+
+    // ------------------------------
+    // 🔥 DYNAMIC URL LOGIC
+    // ------------------------------
+    let url = "";
+
+    const typeLower = record.type?.toLowerCase() || "";
+    const categoryLower = record.category?.toLowerCase() || "";
+
+    if (typeLower.includes("admit") || categoryLower.includes("admit")) {
+      // Admit Card URL
+      url = `https://resultshub.in/admit-cards/${record.slug}`;
+    } else {
+      // Default Result URL
+      //url = `https://resultshub.in/results/${record.slug}`;
+      url = `https://resultshub.in/results`;
+    }
+
+
+    // ------------------------------
+    // 🔥 SEND NOTIFICATION
+    // ------------------------------
     await fetch(`${process.env.NEXT_PUBLIC_SITE_URL}/api/sendNotification`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         title: record.title_en,
         body: `${record.title_hi} – ${record.category} released. Tap to view.`,
-        url: `https://resultshub.in/results/${record.slug}`,
+        url,
         data: {
           id: record._id.toString(),
           category: record.category,
@@ -22,12 +47,13 @@ async function sendAutoNotification(record) {
       }),
     });
 
-    console.log("📢 Auto Notification Sent:", record.title_en);
+    console.log("📢 Auto Notification Sent:", record.title_en, "| URL:", url);
 
   } catch (err) {
     console.error("❌ Auto Notification Failed:", err);
   }
 }
+
 
 
 
