@@ -12,7 +12,8 @@ async function getJobs() {
 
 export default async function JobsPage() {
   const jobs = await getJobs();
-
+  // Generate JSON-LD for all initial jobs server-side
+  const jobsJsonLD = jobs.map((job) => HomeJobSchema(job));
   return (
     <>
       <SEOHead
@@ -22,9 +23,7 @@ export default async function JobsPage() {
 
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{
-          __html: JSON.stringify(jobs.map(HomeJobSchema)),
-        }}
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jobsJsonLD) }}
       />
 
       <JobsClient jobs={jobs} />
