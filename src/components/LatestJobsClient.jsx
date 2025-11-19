@@ -1,9 +1,8 @@
 'use client';
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import JobCard from "@/components/JobCard";
 import SEOHead from "@/components/SEOHead";
-import { HomeJobSchema } from "@/components/HomeJobSchema";
 
 export default function LatestJobsClient({ initialJobs = [] }) {
   const [jobs, setJobs] = useState(initialJobs);
@@ -12,21 +11,6 @@ export default function LatestJobsClient({ initialJobs = [] }) {
   const handleLoadMore = () => setVisibleCount(prev => prev + 6);
 
   const visibleJobs = jobs.slice(0, visibleCount);
-
-  // Update JSON-LD dynamically for newly loaded jobs
-  useEffect(() => {
-    const scriptId = "jobs-json-ld";
-    let script = document.getElementById(scriptId);
-
-    if (!script) {
-      script = document.createElement("script");
-      script.type = "application/ld+json";
-      script.id = scriptId;
-      document.head.appendChild(script);
-    }
-
-    script.innerHTML = JSON.stringify(visibleJobs.map(HomeJobSchema));
-  }, [visibleJobs]);
 
   if (!jobs || jobs.length === 0) {
     return <p className="text-center py-10 text-gray-500">No jobs found.</p>;
@@ -41,6 +25,7 @@ export default function LatestJobsClient({ initialJobs = [] }) {
         image="/images/home-og.jpg"
         url="https://resultshub.in"
       />
+
       <div className="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
         {visibleJobs.map(job => (
           <JobCard key={job._id} job={job} className="flex-1" />
