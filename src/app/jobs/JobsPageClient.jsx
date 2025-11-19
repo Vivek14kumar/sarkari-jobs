@@ -4,7 +4,7 @@ import JobCard from "@/components/JobCard";
 import JobSkeleton from "@/components/JobSkeleton";
 
 const categories = ["All", "Central Govt", "State Govt", "SSC", "Railway"];
-const jobsPerLoad = 4;
+const jobsPerLoad = 6;
 
 export default function JobsClient({ jobs }) {
   const [filter, setFilter] = useState("All");
