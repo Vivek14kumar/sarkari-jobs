@@ -13,11 +13,15 @@ async function getJobs() {
 export default async function JobsPage() {
   const jobs = await getJobs();
 
-  // Create @graph structure
-  const jobsJsonLD = {
-    "@context": "https://schema.org",
-    "@graph": jobs.map(job => HomeJobSchema(job))
-  };
+  // 🔥 Remove duplicates ONLY for JSON-LD (UI shows all)
+const uniqueForSchema = Array.from(
+  new Map(jobs.map(job => [job.slug || job.title, job])).values()
+);
+
+const jobsJsonLD = {
+  "@context": "https://schema.org",
+  "@graph": uniqueForSchema.map(job => HomeJobSchema(job))
+};
 
   return (
     <>
