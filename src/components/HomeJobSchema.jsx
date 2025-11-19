@@ -1,69 +1,51 @@
 export function HomeJobSchema(job) {
-  const hiringOrg = job.extra_info?.find(i =>
-    i.key?.toLowerCase()?.includes("hiring")
-  );
-  const jobLoc = job.extra_info?.find(i =>
-    i.key?.toLowerCase()?.includes("location")
-  );
+  const datePosted = job.startDate
+    ? new Date(job.startDate).toISOString().split("T")[0]
+    : new Date(job.createdAt || Date.now()).toISOString().split("T")[0];
+
+  const validThrough = job.lastDate
+    ? new Date(job.lastDate).toISOString().split("T")[0]
+    : undefined;
 
   return {
     "@context": "https://schema.org/",
     "@type": "JobPosting",
 
-    // Job title and description
-    title: job.title_en || "Job Vacancy",
+    title: job.title_en || job.title || "Job Vacancy",
     description:
       job.description_en ||
       job.description_hi ||
-      `${job.title_en || "Job"} - Check eligibility, important dates, and apply online.`,
+      `${job.title_en || job.title} - Latest government job notification.`,
 
-    // Dates
-    datePosted: job.startDate || job.createdAt || new Date().toISOString().split("T")[0],
-    validThrough: job.lastDate || new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString().split("T")[0],
+    datePosted,
+    validThrough,
 
-    // Employment type
     employmentType: (job.employmentType || "FULL_TIME").toUpperCase(),
 
-    // Salary (optional)
-    baseSalary: job.salary
-      ? {
-          "@type": "MonetaryAmount",
-          currency: "INR",
-          value: {
-            "@type": "QuantitativeValue",
-            value: job.salary,
-            unitText: "MONTH"
-          }
-        }
-      : undefined,
-
-    // Hiring organization
     hiringOrganization: {
       "@type": "Organization",
-      name: hiringOrg?.value || "Organization Name",
-      sameAs: job.officialLink || job.applyLink || "https://example.com"
+      name: job.hiringOrg || "Government of India",
+      sameAs: job.officialLink || job.applyLink || "https://resultshub.in",
+      logo: "https://resultshub.in/logo.png",
     },
 
-    // Job location
     jobLocation: {
       "@type": "Place",
       address: {
         "@type": "PostalAddress",
-        streetAddress: jobLoc?.street || "Street Name",
-        addressLocality: jobLoc?.value || "City",
-        addressRegion: jobLoc?.value || "State",
-        postalCode: jobLoc?.postalCode || "000000",
-        addressCountry: "IN"
-      }
+        addressLocality: job.location || "India",
+        addressCountry: "IN",
+      },
     },
 
-    // Applicant location requirements
-    applicantLocationRequirements: {
-      "@type": "Country",
-      name: "India"
+    identifier: {
+      "@type": "PropertyValue",
+      name: "ResultsHub",
+      value: job._id,
     },
 
-    totalJobOpenings: job.totalPosts || 1,
-    jobBenefits: job.jobBenefits || "As per organization rules"
+    totalJobOpenings: job.totalPosts || undefined,
+
+    url: `https://resultshub.in/jobs/${job.slug}`,
   };
 }
