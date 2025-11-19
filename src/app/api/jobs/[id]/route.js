@@ -8,7 +8,7 @@ export async function GET(req, context) {
   try {
     await connectToDB();
 
-    const { id } = await context.params; // ✅ Must await
+    const { id } = context.params; // ✅ Must await
     let job;
     //const job = await Job.findById(id);
     // Check if it's a valid ObjectId → admin side

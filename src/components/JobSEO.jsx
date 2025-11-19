@@ -47,7 +47,7 @@ const datePosted = date ? new Date(date).toISOString().split("T")[0] : undefined
     },
     directApply: true,
     totalJobOpenings: jobData.totalPosts || undefined,
-    url: `https://resultshub.in/jobs/${jobData.slug}`,
+    url: `https://resultshub.in/jobs/${jobData._id}`,
     //applicationUrl: jobData.applyLink || undefined,
   };
 
