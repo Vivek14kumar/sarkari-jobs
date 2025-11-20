@@ -72,7 +72,7 @@ export default function JobClient({ job }) {
         </div>
         <div className="flex items-center gap-2 text-gray-700">
           <FaCalendarAlt className="text-red-600" />
-          <span>
+          <span className="text-red-500">
             <strong>{language === "en" ? "Last Date:" : "अंतिम तिथि:"}</strong>{" "}
             {lastDate}
           </span>
