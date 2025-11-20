@@ -20,7 +20,7 @@ export const metadata = {
     title: "Results Hub - Sarkari Results & Jobs 2025",
     description:
       "Find the latest Government Jobs, Admit Cards, and Results at ResultsHub.in. Fast updates in English & Hindi.",
-    url: "https://resultshub.in",
+    //url: "https://resultshub.in",
     siteName: "ResultsHub.in",
     images: [
       {
@@ -39,10 +39,10 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
-       <head>
+       {/*<head>
         <Canonical url="https://resultshub.in" />
       </head>
-      {/*<Head >
+      <Head >
         <link rel="canonical" href="https://resultshub.in"/>
       </Head >*/}
       <body className={`${inter.className} bg-gray-50 text-gray-900 flex flex-col min-h-screen`}>
