@@ -77,7 +77,7 @@ if (job.application_fees?.length > 0) {
       key={job._id}
       className="relative bg-white border border-gray-200 rounded-2xl shadow-lg hover:shadow-2xl transition-transform transform hover:-translate-y-2 duration-300 flex flex-col overflow-hidden max-w-sm mx-auto"
       itemScope
-      itemType="https://schema.org/JobPosting"
+      //itemType="https://schema.org/JobPosting"
     >
       {/* Corner Ribbon */}
       {isNew && (
