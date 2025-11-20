@@ -43,32 +43,49 @@ export default function SubscribePopup() {
 
 
   const handleSubscribe = async () => {
-  setStatus("asking");
+  try {
+    setStatus("asking");
 
-  const permission = await Notification.requestPermission();
-  if (permission !== "granted") {
-    setStatus("denied");
-    return;
-  }
+    // Ask permission
+    const permission = await Notification.requestPermission();
+    if (permission !== "granted") {
+      setStatus("denied");
+      return;
+    }
 
-  const token = await requestNotificationToken();
-  if (!token) {
+    // Immediately show "subscribing..." to user
+    setStatus("fetching-token");
+
+    // FAST: token creation starts immediately
+    const tokenPromise = requestNotificationToken();
+
+    // Don’t wait for popup close, only close after success
+    const token = await tokenPromise;
+
+    if (!token) {
+      setStatus("error");
+      return;
+    }
+
+    // FAST: send to backend (non-blocking)
+    fetch("/api/saveToken", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ token }),
+    });
+
+    // Save status
+    localStorage.setItem("notif-subscribed", "1");
+
+    setStatus("subscribed");
+
+    // Close after 500ms (feel instant)
+    setTimeout(() => setOpen(false), 500);
+
+  } catch (error) {
+    console.log("Subscribe error:", error);
     setStatus("error");
-    return;
   }
-
-  await fetch("/api/saveToken", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ token }),
-  });
-
-  // Save status
-  localStorage.setItem("notif-subscribed", "1");
-
-  setStatus("subscribed");
-
-  setTimeout(() => setOpen(false), 1000); // smooth close
 };
 
 
@@ -127,6 +144,12 @@ export default function SubscribePopup() {
           <p className="mt-2 text-xs text-red-600">
             Notifications blocked — enable manually.  
             (आपने Allow नहीं किया)
+          </p>
+        )}
+
+        {status === "fetching-token" && (
+          <p className="mt-2 text-xs text-blue-600">
+            Subscribing… please wait 1 sec
           </p>
         )}
 
