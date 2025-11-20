@@ -2,6 +2,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import SEOHead from "@/components/SEOHead";
+import Canonical from "@/components/Canonical";
 
 export default function YojnaListPage() {
   const [yojnas, setYojnas] = useState([]);
@@ -58,6 +59,10 @@ export default function YojnaListPage() {
 
   return (
     <>
+    <head>
+      <Canonical url={`https://resultshub.in/yojna`}/>
+    </head>
+    
      <SEOHead
         title="Government Schemes 2025 | Sarkari Yojana | Results Hub"
         description="Get the latest updates on all Government Schemes (Sarkari Yojana) in India. Check eligibility, benefits, and application links for central and state yojanas at ResultsHub.in."

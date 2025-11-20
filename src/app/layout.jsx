@@ -4,7 +4,7 @@ import NavbarWrapper from "@/components/NavbarWrapper";
 import Footer from "@/components/Footer";
 import { Analytics } from "@vercel/analytics/next"
 //import Head from "next/head";
-import CanonicalHead from "@/components/CanonicalHead";
+import Canonical from "@/components/Canonical";
 import ServiceWorkerRegister from "@/components/ServiceWorkerRegister";
 import SubscribePopup from "@/components/SubscribePopup";
 
@@ -40,7 +40,7 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en">
        <head>
-        <CanonicalHead />
+        <Canonical url="https://resultshub.in" />
       </head>
       {/*<Head >
         <link rel="canonical" href="https://resultshub.in"/>

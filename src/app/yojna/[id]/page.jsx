@@ -1,6 +1,7 @@
 import { connectToDB } from "@/lib/mongodb";
 import Yojna from "@/app/api/models/Yojna";
 import Link from "next/link";
+import Canonical from "@/components/Canonical";
 import { 
   FaArrowLeft, 
   FaCheckCircle, 
@@ -31,6 +32,11 @@ export default async function YojnaDetailPage({ params }) {
     );
 
   return (
+    <>
+    <head>
+      <Canonical url={`https://resultshub.in/yojna/${slug}`}/>
+    </head>
+    
     <main className="max-w-6xl mx-auto p-6 space-y-10">
       {/* Back Button */}
       <Link
@@ -157,5 +163,6 @@ export default async function YojnaDetailPage({ params }) {
           )
       )}
     </main>
+    </>
   );
 }

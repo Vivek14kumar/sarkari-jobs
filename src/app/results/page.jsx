@@ -5,6 +5,7 @@ import axios from "axios";
 import Link from "next/link";
 import { FaExternalLinkAlt, FaSearch } from "react-icons/fa";
 import SEOHead from "@/components/SEOHead";
+import Canonical from "@/components/Canonical";
 
 const ResultPage = () => {
   const [results, setResults] = useState([]);
@@ -84,6 +85,9 @@ const ResultPage = () => {
 
   return (
     <>
+    <head>
+      <Canonical url={`https://resultshub.in/results`}/>
+    </head>
     <SEOHead
         title="Latest Sarkari Results 2025 | Government Exam Results | ResultsHub.in"
         description="Check all latest Sarkari Results 2025 including SSC, UPSC, Railway, Bank, Police, and other government exam results in English and Hindi at ResultsHub.in."

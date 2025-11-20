@@ -2,6 +2,7 @@
 import JobClient from "./JobClient";
 import JobSEO from "@/components/JobSEO";
 import SEOHead from "@/components/SEOHead";
+import Canonical from "@/components/Canonical";
 import { notFound } from "next/navigation";
 
 export default async function JobDetailsPage({ params }) {
@@ -24,6 +25,10 @@ export default async function JobDetailsPage({ params }) {
     <>
       {/* SSR JSON-LD for Google */}
       <JobSEO jobData={job} />
+      {/* Canonical for Google */}
+      <head>
+        <Canonical url={`https://resultshub.in/jobs/${slug}`} />
+      </head>
 
       {/* Social/meta head (optional) */}
       <SEOHead
@@ -34,7 +39,7 @@ export default async function JobDetailsPage({ params }) {
             : `Apply online for ${job.title_en || job.title}.`
         }
         image={job.image || "/default-og-image.jpg"}
-        url={`https://resultshub.in/jobs/${job.slug}`}
+        //url={`https://resultshub.in/jobs/${job.slug}`}
       />
 
       {/* Client UI */}

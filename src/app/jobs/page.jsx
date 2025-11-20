@@ -1,5 +1,6 @@
 import SEOHead from "@/components/SEOHead";
 import JobsClient from "./JobsPageClient";
+import Canonical from "@/components/Canonical";
 import { HomeJobSchema } from "@/components/HomeJobSchema";
 
 async function getJobs() {
@@ -25,6 +26,10 @@ const jobsJsonLD = {
 
   return (
     <>
+      <head>
+        <Canonical url={`https://resultshub.in/jobs`}/>
+      </head>
+      
       <SEOHead
         title="All Government Jobs 2025 | Sarkari Result"
         description="daa exam form fee, dda mts recruitment, Browse all latest government jobs."

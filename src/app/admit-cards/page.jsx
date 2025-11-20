@@ -5,6 +5,7 @@ import axios from "axios";
 import Link from "next/link";
 import { FaExternalLinkAlt } from "react-icons/fa";
 import SEOHead from "@/components/SEOHead";
+import Canonical from "@/components/Canonical";
 
 const AdmitCardPage = () => {
   const [admitCards, setAdmitCards] = useState([]);
@@ -53,6 +54,9 @@ const AdmitCardPage = () => {
 
   return (
     <>
+    <head>
+      <Canonical url={`https://resultshub.in/admit-cards`}/>
+    </head>
     <SEOHead
         title="Sarkari Admit Card 2025 | Download Exam Hall Tickets | ResultsHub.in"
         description="Download Sarkari Admit Cards 2025 for SSC, UPSC, Railway, Bank, Police, and other government exams. Get official exam date, hall ticket, and instructions at ResultsHub.in."
