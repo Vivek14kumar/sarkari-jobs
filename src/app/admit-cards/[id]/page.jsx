@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import axios from "axios";
-import Canonical from "@/components/Canonical";
+//import Canonical from "@/components/Canonical";
 
 const AdmitCardDetails = () => {
   const params = useParams();
@@ -38,9 +38,9 @@ useEffect(() => {
 
   return (
     <>
-    <head>
+    {/*<head>
       <Canonical url={`https://resultshub.in/admit-cards/${slug}`}/>
-    </head>
+    </head>*/}
     <div className="min-h-screen py-10 px-4 bg-gradient-to-br from-green-50 via-white to-teal-50">
       <div className="max-w-3xl mx-auto bg-white rounded-2xl shadow p-6">
         <h1 className="text-2xl font-bold mb-4">{card.title_en}</h1>

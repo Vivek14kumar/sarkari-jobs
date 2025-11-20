@@ -34,9 +34,9 @@ export default async function YojnaDetailPage({ params }) {
   return (
     <>
     <head>
-      <Canonical url={`https://resultshub.in/yojna/${slug}`}/>
+      <Canonical url={`https://resultshub.in/yojna/${yojna.slug}`}/>
     </head>
-    
+
     <main className="max-w-6xl mx-auto p-6 space-y-10">
       {/* Back Button */}
       <Link

@@ -27,7 +27,7 @@ export default async function JobDetailsPage({ params }) {
       <JobSEO jobData={job} />
       {/* Canonical for Google */}
       <head>
-        <Canonical url={`https://resultshub.in/jobs/${slug}`} />
+        <Canonical url={`https://resultshub.in/jobs/${Job.slug}`} />
       </head>
 
       {/* Social/meta head (optional) */}
