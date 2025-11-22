@@ -132,7 +132,7 @@ const AdmitCardPage = () => {
                       disabled
                       className="w-full flex items-center justify-center gap-2 bg-gray-300 text-gray-600 py-2 rounded-xl font-semibold shadow-inner cursor-not-allowed"
                     >
-                      Download Admit Card <FaExternalLinkAlt size={14} />
+                      Check Now <FaExternalLinkAlt size={14} />
                     </button>
                   )}
 
