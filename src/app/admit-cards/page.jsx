@@ -125,7 +125,7 @@ const AdmitCardPage = () => {
                       target="_blank"
                       className="w-full flex items-center justify-center gap-2 bg-gradient-to-r from-green-600 to-teal-600 text-white py-2 rounded-xl hover:from-teal-700 hover:to-green-700 transition duration-300 font-semibold shadow-md"
                     >
-                      Download Admit Card <FaExternalLinkAlt size={14} />
+                      Check Now <FaExternalLinkAlt size={14} />
                     </Link>
                   ) : (
                     <button

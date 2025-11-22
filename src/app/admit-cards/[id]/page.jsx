@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import axios from "axios";
+//import { FaExternalLinkAlt } from "react-icons/fa";
 //import Canonical from "@/components/Canonical";
 
 const AdmitCardDetails = () => {
@@ -87,7 +88,7 @@ useEffect(() => {
               target="_blank"
               className="inline-block bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition"
             >
-              Download Admit Card
+              Check Now {/*<FaExternalLinkAlt size={14} />*/}
             </a>
           </div>
         )}
